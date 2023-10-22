@@ -107,16 +107,23 @@ check_x64() {
 #Check OS
 check_ubuntu(){
   RELEASE=$(lsb_release -r | sed 's/^[^0-9]*//g')
-  if [ "$RELEASE" != "22.10" ]; then 
-     echo -e "$RED Sorry, You must run this command on ubuntu 20.4.....";
-     exit 0
-    else
+  if [ "$RELEASE" == "22.10" ] || [ "$RELEASE" == "20.04" ]; then 
      echo -e "$GREEN [ ✔ ]$BLUE Your ubuntu version Is ➜$GREEN Good!\n";
      sleep 1
+    else
+     echo -e "$RED Sorry, This script support only ubuntu version [20.04 - 22.10]";
+     exit 0
   fi
 }
 
 
 
 
-banner
+Main(){
+    banner
+    check_root
+    check_ram
+    check_x64
+    check_ubuntu
+}
+Main
