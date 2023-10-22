@@ -81,7 +81,18 @@ check_root()
       sleep 1
    fi  
 }
-
+#Check RAM Capacity
+check_ram() {
+  MEM=`grep MemTotal /proc/meminfo | awk '{print $2}'`
+  MEM=$((MEM/1000))
+  if (( $MEM < 2048 )); then 
+     echo -e "$RED Sorry, Your server needs to have (at least) 2G of memory.....";
+     exit 0
+    else
+     echo -e "$GREEN [ ✔ ]$BLUE Your Ram Size Is ➜$GREEN Good!\n";
+     sleep 1
+  fi
+}
 
 
 
