@@ -104,7 +104,17 @@ check_x64() {
      sleep 1
   fi
 }
-
+#Check OS
+check_ubuntu(){
+  RELEASE=$(lsb_release -r | sed 's/^[^0-9]*//g')
+  if [ "$RELEASE" != "22.10" ]; then 
+     echo -e "$RED Sorry, You must run this command on ubuntu 20.4.....";
+     exit 0
+    else
+     echo -e "$GREEN [ ✔ ]$BLUE Your ubuntu version Is ➜$GREEN Good!\n";
+     sleep 1
+  fi
+}
 
 
 
