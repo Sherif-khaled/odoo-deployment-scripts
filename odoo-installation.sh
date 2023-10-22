@@ -3,6 +3,8 @@
 ###### Variables ###### 
 
 # Colours Variables
+BOLD='\033[1m'
+ENDBOLD='\033[0m'
 ENDCOLOR='\033[0m'
 RED='\033[00;31m'
 GREEN='\033[00;32m'
@@ -18,6 +20,7 @@ LBLUE='\033[01;34m'
 LPURPLE='\033[01;35m'
 LCYAN='\033[01;36m'
 WHITE='\033[01;37m'
+AA='\033[43m'
 
 #User Varibales
 ODOO_VERSION=16
@@ -57,16 +60,10 @@ function banner(){
                          _/____\____/____/_____(___(__/____(___ __(___/___
                                                                            $ENDCOLOR"
    
-    echo -e "                     $LPURPLE mrbvrz$LCYAN -$RED sherif.khaleed@gmail.com        $ENDCOLOR"
+    echo -e "                     $LYELLOW sherif.khaleed@gmail.com        $ENDCOLOR"
     echo ""
     echo -e "$YELLOW --------------------------------------------------------------- $ENDCOLOR"
-    echo "<!DOCTYPE html>
-<html>
-<head>
-    <title>HTML with h5 Header</title>
-</head>
-<body>"
-    echo -e ""$GREEN  "<b>Stand with Gaza, it is under attack for the purpose of genocide</b>" $ENDCOLOR""
+    echo -e "$AA  Stand with Gaza, it is under attack for the purpose of genocide $ENDCOLOR"
 
 }
 
