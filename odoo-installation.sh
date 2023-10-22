@@ -60,5 +60,14 @@ function banner(){
     echo -e "                     $LPURPLE mrbvrz$LCYAN -$RED sherif.khaleed@gmail.com        $ENDCOLOR"
     echo ""
     echo -e "$YELLOW --------------------------------------------------------------- $ENDCOLOR"
+    echo "<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML with h5 Header</title>
+</head>
+<body>"
+    echo -e ""$GREEN  "<b>Stand with Gaza, it is under attack for the purpose of genocide</b>" $ENDCOLOR""
 
 }
+
+banner
