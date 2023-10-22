@@ -93,7 +93,17 @@ check_ram() {
      sleep 1
   fi
 }
-
+#Check CPU Arctecture
+check_x64() {
+  UNAME=`uname -m`
+  if [ "$UNAME" != "x86_64" ]; then 
+     echo -e "$RED Sorry, You must run this command on a 64-bit server.....";
+     exit 0
+    else
+     echo -e "$GREEN [ ✔ ]$BLUE Your CPU arctecture Is ➜$GREEN Good!\n";
+     sleep 1
+  fi
+}
 
 
 
