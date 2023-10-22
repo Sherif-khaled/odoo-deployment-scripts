@@ -20,7 +20,7 @@ LBLUE='\033[01;34m'
 LPURPLE='\033[01;35m'
 LCYAN='\033[01;36m'
 WHITE='\033[01;37m'
-AA='\033[43m'
+HIGHLIGHT='\033[41m'
 
 #User Varibales
 ODOO_VERSION=16
@@ -63,7 +63,7 @@ function banner(){
     echo -e "                     $LYELLOW sherif.khaleed@gmail.com        $ENDCOLOR"
     echo ""
     echo -e "$YELLOW --------------------------------------------------------------- $ENDCOLOR"
-    echo -e "$AA  Stand with Gaza, it is under attack for the purpose of genocide $ENDCOLOR"
+    echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR"
 
 }
 
