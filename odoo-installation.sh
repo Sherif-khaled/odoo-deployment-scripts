@@ -66,5 +66,26 @@ function banner(){
     echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR"
 
 }
+# Check root privilege,the script required root privilege to make all configurations
+check_root()
+{
+    echo -e "$BLUE [ * ] Check root privilege"
+    sleep 1
+
+   if [ `id -u` != 0 ];then
+      echo -e "$RED [ X ]$BLUE You are not a root user !\n";
+      echo -e "$RED Sorry, You must be root user to run this script....";
+      exit 0
+    else
+      echo -e "$GREEN [ ✔ ]$BLUE Your User Is ➜$GREEN Root!\n";
+      sleep 1
+   fi  
+}
+
+
+
+
+
+
 
 banner
