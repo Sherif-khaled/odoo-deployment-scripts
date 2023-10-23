@@ -443,6 +443,15 @@ function link_domain(){
   rm /etc/nginx/sites-enabled/default
   systemctl restart nginx
 }
+function final_resualt(){
+  echo -e "$GREEN ********************************************
+        * Installation completed successfully
+        * odoo  Version: $ODOO_VERSION                         
+        * URL: $DOMAIN_NAME
+        * Master Password Is: $MASTER_PASSWORD                                                                                          
+        ******************************************************
+        "
+}
 
 Main(){
     banner
@@ -473,7 +482,12 @@ Main(){
 
     if [ "$IsCloud" = true ]; then
     link_domain
+    DOMAIN_NAME="https://$DOMAIN_NAME"
+    else
+    DOMAIN_NAME="http://localhost:$SYS_PORT"
     fi
+
+    final_resualt
 
 
 }
