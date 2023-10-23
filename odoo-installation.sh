@@ -225,21 +225,20 @@ function printUserInput(){
     [Nn]* ) exit 0;;
   esac
 }
-# Update repositories,and upgrade system
 function upgrade_system(){
-  echo -e "\n---- Update Server ----"
-  echo "deb http://security.ubuntu.com/ubuntu focal-security main" | sudo tee /etc/apt/sources.list.d/focal-security.list
+  echo -e "\n---- Updating Package Lists ----"
+  sudo apt update -y
 
-  apt update
-  DEBIAN_FRONTEND='noninteractive' apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' upgrade
-  #DEBIAN_FRONTEND='noninteractive' apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' dist-upgrade
-  DEBIAN_FRONTEND='noninteractive' apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' ttf-mscorefonts-installer
-  
-  apt-get autoremove -y
-  apt-get clean
-  apt-get autoclean
-  sudo rm /etc/apt/sources.list.d/focal-security.list
+  echo -e "\n---- Upgrading System ----"
+  sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'
 
+  echo -e "\n---- Installing Microsoft Fonts ----"
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ttf-mscorefonts-installer
+
+  echo -e "\n---- Removing Unnecessary Packages ----"
+  sudo apt autoremove -y
+  sudo apt clean
+  sudo apt autoclean
 }
 
 
