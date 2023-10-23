@@ -163,13 +163,25 @@ function IsCloud(){
     [Nn]* ) IsCloud=false;;
   esac
 }
-function getDomainName(){
+function getDomainName() {
+  local DOMAIN_NAME
+  local DOMAIN_REGEX="^([A-Za-z0-9.-]+\.)+[A-Za-z]{2,}$"  # Regular expression to validate domain names with subdomains
 
-  while [[ -z "$DOMAIN_NAME" ]]
-  do
-    read -p "Enter the domain name: " DOMAIN_NAME
+  while true; do
+    read -p "Enter the domain name (including subdomains, if any): " DOMAIN_NAME
+
+    if [[ -z "$DOMAIN_NAME" ]]; then
+      echo "Domain name cannot be empty. Please try again."
+    elif ! [[ "$DOMAIN_NAME" =~ $DOMAIN_REGEX ]]; then
+      echo "Invalid domain format. The domain must be like 'example.com' or 'sub.example.com'. Please try again."
+    else
+      break  # Valid domain name, exit the loop
+    fi
   done
 }
+
+
+
 
 Main(){
     banner
