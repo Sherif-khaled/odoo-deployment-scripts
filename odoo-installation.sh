@@ -362,7 +362,8 @@ WantedBy=multi-user.target
 HERE
 }
 function create_domain_file(){
-cat > /etc/nginx/sites-available/$DOMAIN_NAME << HERE
+local DOMAIN_NAME="$1"
+cat > "/etc/nginx/sites-available/$DOMAIN_NAME" << HERE
 #odoo server
 upstream odoo {
  server 127.0.0.1:$SYS_PORT;
@@ -428,12 +429,17 @@ HERE
 }
 function link_domain(){
   systemctl stop nginx
-  certbot certonly --standalone -d $DOMAIN_NAME --preferred-challenges http --agree-tos -n -m $SSL_EMAIL --keep-until-expiring
+  certbot certonly --standalone -d "$DOMAIN_NAME" --preferred-challenges http --agree-tos -n -m "$SSL_EMAIL" --keep-until-expiring
   
-  echo "19 4 * * 3 certbot renew --post-hook \"systemctl reload nginx\"" | crontab -
+  # Define the crontab entry
+  CRONTAB_ENTRY="@daily certbot renew --pre-hook 'service nginx stop' --post-hook 'service nginx start'"
+
+  # Add the entry to the crontab
+  (crontab -l 2>/dev/null; echo "$CRONTAB_ENTRY") | crontab -
   
-  create_domain_file
-  ln -s /etc/nginx/sites-available/$DOMAIN_NAME /etc/nginx/sites-enabled/$DOMAIN_NAME
+  create_domain_file "$DOMAIN_NAME"
+
+  ln -s "/etc/nginx/sites-available/$DOMAIN_NAME" "/etc/nginx/sites-enabled/$DOMAIN_NAME"
   rm /etc/nginx/sites-enabled/default
   systemctl restart nginx
 }
@@ -449,8 +455,12 @@ Main(){
     getEditionName
     getPortNumber
     IsCloud
+
+    if [ "$IsCloud" = true ]; then
     getDomainName
     getSSLEmail
+    fi
+
     generateMasterPassword
     printUserInput
 
@@ -460,6 +470,10 @@ Main(){
     install_wkhtmltopdf
     installing_odoo
     configure_odoo
+
+    if [ "$IsCloud" = true ]; then
+    link_domain
+    fi
 
 
 }
