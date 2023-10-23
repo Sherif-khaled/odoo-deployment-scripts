@@ -225,7 +225,22 @@ function printUserInput(){
     [Nn]* ) exit 0;;
   esac
 }
+# Update repositories,and upgrade system
+function upgrade_system(){
+  echo -e "\n---- Update Server ----"
+  echo "deb http://security.ubuntu.com/ubuntu focal-security main" | sudo tee /etc/apt/sources.list.d/focal-security.list
 
+  apt update
+  DEBIAN_FRONTEND='noninteractive' apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' upgrade
+  #DEBIAN_FRONTEND='noninteractive' apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' dist-upgrade
+  DEBIAN_FRONTEND='noninteractive' apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' ttf-mscorefonts-installer
+  
+  apt-get autoremove -y
+  apt-get clean
+  apt-get autoclean
+  sudo rm /etc/apt/sources.list.d/focal-security.list
+
+}
 
 
 Main(){
