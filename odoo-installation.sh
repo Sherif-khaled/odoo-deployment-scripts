@@ -30,10 +30,8 @@ SSL_EMAIL=''
 MASTER_PASSWORD=
 HASHED_PASSWORD=
 ENABLE_ENTERPRISE=false
-REBO_TOKEN=
-GETHUB_USERNAME=
-GITHUB_SUPER_ACCESS=
-REPO_NAME=''
+ENTERPRISE_REPO_USERNAME=
+ENTERPRISE_REPO_PASSWPRD=
 IsCloud=true
 
 function banner(){
@@ -142,17 +140,23 @@ function getEditionName(){
     [Nn]* ) ENABLE_ENTERPRISE=false;;
   esac
 }
-function get_enterprise_token_access() {
+function get_enterprise_username() {
 
   while true; do
-    read -p "Enter the odoo enterprise repo token access: " DOMAIN_NAME
+    read -p "Enter the odoo enterprise repository username: " ENTERPRISE_REPO_USERNAME
 
-    if [[ -z "$GITHUB_SUPER_ACCESS" ]]; then
-      echo "Token access cannot be empty. Please try again."
-    elif ! [[ "$DOMAIN_NAME" =~ $DOMAIN_REGEX ]]; then
-      echo "Invalid domain format. The domain must be like 'example.com' or 'sub.example.com'. Please try again."
-    else
-      break  # Valid domain name, exit the loop
+    if [[ -z "$ENTERPRISE_REPO_USERNAME" ]]; then
+      echo "Username access cannot be empty. Please try again."
+    fi
+  done
+}
+function get_enterprise_password() {
+
+  while true; do
+    read -p "Enter the odoo enterprise repository password: " ENTERPRISE_REPO_PASSWPRD
+
+    if [[ -z "$ENTERPRISE_REPO_PASSWPRD" ]]; then
+      echo "Password access cannot be empty. Please try again."
     fi
   done
 }
