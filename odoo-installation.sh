@@ -115,6 +115,11 @@ check_ubuntu(){
      exit 0
   fi
 }
+#generate script errors
+err(){
+  echo -e "install-odoo.sh say: $RED $1 $ENDCOLOR"
+  exit 1
+}
 
 
 
