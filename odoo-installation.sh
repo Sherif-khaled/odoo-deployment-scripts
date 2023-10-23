@@ -131,6 +131,15 @@ function getOdooVersion(){
     fi
   done
 }
+function getEditionName(){
+
+  echo -e "$LGREEN Do you want to install enterprise edition? (y)es, (n)o :"
+  read  -p ' ' INPUT
+  case $INPUT in
+    [Yy]* ) ENABLE_ENTERPRISE=true;;
+    [Nn]* ) ENABLE_ENTERPRISE=false;;
+  esac
+}
 
 
 
@@ -142,5 +151,6 @@ Main(){
     check_ubuntu
 
     getOdooVersion
+    getEditionName
 }
 Main
