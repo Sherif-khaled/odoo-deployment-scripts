@@ -284,14 +284,17 @@ function install_wkhtmltopdf(){
   sudo apt install ./wkhtmltox_0.12.5-1.bionic_amd64.deb -y
 }
 function installing_odoo(){
-  git clone https://www.github.com/odoo/odoo --depth 1 --branch "$ODOO_VERSION".0 /opt/odoo"$ODOO_VERSION"/odoo
-  cd /opt/odoo"$ODOO_VERSION"
-  pip3 install wheel
-  pip3 install paramiko
-  pip3 install asn1crypto
-  pip3 install pandas
-  pip3 install -r /opt/odoo"$ODOO_VERSION"/odoo/requirements.txt
-  mkdir /opt/odoo"$ODOO_VERSION"/custom-addons
+  su -c "git clone https://www.github.com/odoo/odoo --depth 1 --branch $ODOO_VERSION.0 /opt/odoo$ODOO_VERSION/odoo"
+  su -c "python3 -m venv odoo-venv" #Create a new Python virtual environment for Odoo:
+  su -c "cd /opt/odoo$ODOO_VERSION" odoo"$ODOO_VERSION"
+  su -c "source odoo-venv/bin/activate" odoo"$ODOO_VERSION"
+  su -c "pip3 install wheel" odoo"$ODOO_VERSION"
+  su -c "pip3 install paramiko" odoo"$ODOO_VERSION"
+  su -c "pip3 install asn1crypto" odoo"$ODOO_VERSION"
+  su -c "pip3 install pandas" odoo"$ODOO_VERSION"
+  su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo"$ODOO_VERSION"
+  su -c "deactivate"
+  su -c "mkdir /opt/odoo$ODOO_VERSION/custom-addons"
 }
 
 Main(){
