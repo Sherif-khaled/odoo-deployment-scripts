@@ -24,7 +24,7 @@ HIGHLIGHT='\033[41m'
 
 #User Varibales
 ODOO_VERSION=
-SYS_PORT=8077
+SYS_PORT=
 DOMAIN_NAME=''
 SSL_EMAIL=''
 MASTER_PASSWORD=
@@ -140,6 +140,19 @@ function getEditionName(){
     [Nn]* ) ENABLE_ENTERPRISE=false;;
   esac
 }
+function getPortNumber(){
+  re='^[0-9]+$'
+  while [[ -z "$SYS_PORT" ]] || ! ((8060 <= SYS_PORT && SYS_PORT <= 8090))
+  do
+    read -p "Choose the port number between [8060 - 8090]: " SYS_PORT
+    if ! [[ $SYS_PORT =~ $re ]] ; then
+      echo -e "Error: Not a valid number\n"
+    elif ! ((8060 <= SYS_PORT && SYS_PORT <= 8090)); then
+      echo -e "Error: Number is not within range [8060 - 8090]\n"
+      SYS_PORT=""
+    fi
+  done
+}
 
 
 
@@ -152,5 +165,6 @@ Main(){
 
     getOdooVersion
     getEditionName
+    getPortNumber
 }
 Main
