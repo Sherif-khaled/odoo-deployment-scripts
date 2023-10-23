@@ -33,6 +33,7 @@ REBO_TOKEN=
 GETHUB_USERNAME=
 GITHUB_SUPER_ACCESS=
 REPO_NAME=''
+IsCloud=true
 
 function banner(){
     
@@ -153,7 +154,15 @@ function getPortNumber(){
     fi
   done
 }
+function IsCloud(){
 
+  echo -e "$LGREEN Do you want to install the odoo on cloud server? (y)es, (n)o :"
+  read  -p ' ' INPUT
+  case $INPUT in
+    [Yy]* ) IsCloud=true;;
+    [Nn]* ) IsCloud=false;;
+  esac
+}
 
 
 Main(){
@@ -166,5 +175,6 @@ Main(){
     getOdooVersion
     getEditionName
     getPortNumber
+    IsCloud
 }
 Main
