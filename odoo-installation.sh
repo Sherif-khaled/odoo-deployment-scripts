@@ -279,6 +279,10 @@ function create_user(){
   #create postgresql user
   sudo su - postgres -c "createuser -s odoo$ODOO_VERSION"
 }
+function install_wkhtmltopdf(){
+  wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
+  sudo apt install ./wkhtmltox_0.12.5-1.bionic_amd64.deb -y
+}
 
 Main(){
     banner
@@ -299,6 +303,7 @@ Main(){
     configure_ufw
     install_dependencies
     create_user
+    install_wkhtmltopdf
 
 
 }
