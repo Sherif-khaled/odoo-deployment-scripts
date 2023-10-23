@@ -179,7 +179,29 @@ function getDomainName() {
     fi
   done
 }
+function getSSLEmail() {
+    local DEFAULT_SSL_EMAIL="user@example.com"
+    local EMIAL
 
+    echo "Please enter your email address (e.g. 'user@example.com'):"
+    read SSL_EMAIL
+    while [[ -z "$SSL_EMAIL" ]]; do
+        read -p "Your email address cannot be empty. Please enter a valid email address:" SSL_EMAIL
+    done
+
+    # Validate input
+    if [[ ! "$SSL_EMAIL" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+        echo "Invalid email address format."
+        SSL_EMAIL=$DEFAULT_SSL_EMAIL
+    fi
+
+    # Set default value if empty
+    if [[ -z "$SSL_EMAIL" ]]; then
+        SSL_EMAIL=$DEFAULT_SSL_EMAIL
+    fi
+
+    echo "Email address set to: $SSL_EMAIL"
+}
 
 
 
@@ -194,7 +216,8 @@ Main(){
     #getEditionName
     #getPortNumber
     #IsCloud
-    getDomainName
+    #getDomainName
+    getSSLEmail
 
 
 }
