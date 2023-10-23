@@ -195,6 +195,12 @@ function getSSLEmail() {
     fi
   done
 }
+function generateMasterPassword() {
+   local result=tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 15
+
+   MASTERmaste_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$result}'))")
+
+}
 
 
 
