@@ -301,6 +301,14 @@ function installing_odoo(){
   su -c "deactivate"
   su -c "mkdir /opt/odoo$ODOO_VERSION/custom-addons"
 }
+function configure_odoo(){
+  create_odoo_file
+  create_service_file
+  configure_logs
+  sudo systemctl daemon-reload
+  sudo systemctl enable --now odoo"$ODOO_VERSION"
+  service odoo"$ODOO_VERSION" start
+}
 # create Logs Directory
 function configure_logs(){
   mkdir /var/log/odoo"$ODOO_VERSION"
@@ -353,6 +361,83 @@ StandardOutput=journal+console
 WantedBy=multi-user.target
 HERE
 }
+function create_domain_file(){
+cat > /etc/nginx/sites-available/$DOMAIN_NAME << HERE
+#odoo server
+upstream odoo {
+ server 127.0.0.1:$SYS_PORT;
+}
+upstream odoochat {
+ server 127.0.0.1:8072;
+}
+
+# http -> https
+server {
+   listen 80;
+   server_name $DOMAIN_NAME;
+   return 301 https://$host$request_uri;
+   rewrite ^(.*) https://$host$1 permanent;
+}
+
+server {
+ listen 443 ssl;
+ server_name $DOMAIN_NAME;
+ client_max_body_size 500M;
+ proxy_read_timeout 720s;
+ proxy_connect_timeout 720s;
+ proxy_send_timeout 720s;
+
+ # Add Headers for odoo proxy mode
+ proxy_set_header X-Forwarded-Host \$host;
+ proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+ proxy_set_header X-Forwarded-Proto \$scheme;
+ proxy_set_header X-Real-IP \$remote_addr;
+
+ # SSL parameters
+ ssl_certificate /etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem;
+ ssl_certificate_key /etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem;
+ ssl_session_timeout 30m;
+ ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
+ ssl_prefer_server_ciphers on;
+
+ # log
+ access_log /var/log/nginx/odoo.access.log;
+ error_log /var/log/nginx/odoo.error.log;
+
+ # Redirect longpoll requests to odoo longpolling port
+ location /longpolling {
+ proxy_pass http://odoochat;
+ }
+
+ # Redirect requests to odoo backend server
+ location / {
+   proxy_redirect off;
+   proxy_pass http://odoo;
+ }
+
+ # common gzip
+ gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
+ gzip on;
+ gzip_types text/css application/javascript;
+ gzip_min_length 1000; # Set an appropriate threshold length for compression.
+ gzip_comp_level 9;    # Compression level (1-9, 1 being the fastest, 9 the best compression).
+ gzip_vary on;
+}
+HERE
+}
+function link_domain(){
+  systemctl stop nginx
+  certbot certonly --standalone -d $DOMAIN_NAME --preferred-challenges http --agree-tos -n -m $SSL_EMAIL --keep-until-expiring
+  
+  echo "19 4 * * 3 certbot renew --post-hook \"systemctl reload nginx\"" | crontab -
+  
+  create_domain_file
+  ln -s /etc/nginx/sites-available/$DOMAIN_NAME /etc/nginx/sites-enabled/$DOMAIN_NAME
+  rm /etc/nginx/sites-enabled/default
+  systemctl restart nginx
+}
+
 Main(){
     banner
     check_root
@@ -374,6 +459,7 @@ Main(){
     create_user
     install_wkhtmltopdf
     installing_odoo
+    configure_odoo
 
 
 }
