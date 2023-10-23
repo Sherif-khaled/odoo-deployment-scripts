@@ -148,7 +148,7 @@ function getPortNumber(){
     if ! [[ $SYS_PORT =~ $re ]] ; then
       echo -e "Error: Not a valid number\n"
     elif ! ((8060 <= SYS_PORT && SYS_PORT <= 8090)); then
-      echo -e "Error: Number is not within range [8060 - 8090]\n"
+      echo -e "Error: Port number is not within range [8060 - 8090]\n"
       SYS_PORT=""
     fi
   done
