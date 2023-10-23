@@ -163,18 +163,27 @@ function IsCloud(){
     [Nn]* ) IsCloud=false;;
   esac
 }
+function getDomainName(){
 
+  while [[ -z "$DOMAIN_NAME" ]]
+  do
+    read -p "Enter the domain name: " DOMAIN_NAME
+  done
+}
 
 Main(){
     banner
-    check_root
-    check_ram
-    check_x64
-    check_ubuntu
+    #check_root
+    #check_ram
+    #check_x64
+    #check_ubuntu
 
-    getOdooVersion
-    getEditionName
-    getPortNumber
-    IsCloud
+    #getOdooVersion
+    #getEditionName
+    #getPortNumber
+    #IsCloud
+    getDomainName
+
+
 }
 Main
