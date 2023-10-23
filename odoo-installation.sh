@@ -480,6 +480,12 @@ Main(){
 
     getOdooVersion
     getEditionName
+
+    if [ "$ENABLE_ENTERPRISE" = true ]; then
+    get_enterprise_username
+    get_enterprise_password
+    fi
+
     getPortNumber
     IsCloud
 
