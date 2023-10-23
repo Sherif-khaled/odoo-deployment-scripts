@@ -301,6 +301,11 @@ function installing_odoo(){
   su -c "deactivate"
   su -c "mkdir /opt/odoo$ODOO_VERSION/custom-addons"
 }
+# create Logs Directory
+function configure_logs(){
+  mkdir /var/log/odoo"$ODOO_VERSION"
+  chown odoo"$ODOO_VERSION":odoo"$ODOO_VERSION" /var/log/odoo"$ODOO_VERSION"
+}
 
 Main(){
     banner
