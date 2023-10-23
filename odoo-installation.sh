@@ -28,6 +28,7 @@ SYS_PORT=
 DOMAIN_NAME=''
 SSL_EMAIL=''
 MASTER_PASSWORD=
+HASHED_PASSWORD=
 ENABLE_ENTERPRISE=false
 REBO_TOKEN=
 GETHUB_USERNAME=
@@ -196,9 +197,15 @@ function getSSLEmail() {
   done
 }
 function generateMasterPassword() {
-   local result=tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 15
+   MASTER_PASSWORD= tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 15
 
-   MASTERmaste_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$result}'))")
+   # Check if passlib is installed
+    if ! pip3 show passlib &> /dev/null; then
+        echo "passlib is not installed. Installing passlib..."
+        pip3 install passlib
+    fi
+
+   HASHED_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$MASTER_PASSWORD}'))")
 
 }
 
@@ -216,7 +223,8 @@ Main(){
     #getPortNumber
     #IsCloud
     #getDomainName
-    getSSLEmail
+    #getSSLEmail
+    generateMasterPassword
 
 
 }
