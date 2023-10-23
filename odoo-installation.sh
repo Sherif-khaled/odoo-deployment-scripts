@@ -240,7 +240,17 @@ function upgrade_system(){
   sudo apt clean
   sudo apt autoclean
 }
+# configure and allow ports in UFW firewall
+function configure_ufw(){
+  sudo service ufw start
+  sudo ufw allow ssh       # allow ssh port
+  sudo ufw allow "$SYS_PORT"/tcp # allow odoo port
+  sudo ufw allow 8072/tcp  # allow longpolling port
+  sudo ufw allow 80/tcp    # allow http port
+  sudo ufw allow 443/tcp # allow https port
 
+  echo "y" | sudo ufw enable "$answer"
+}
 
 Main(){
     #banner
