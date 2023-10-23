@@ -227,18 +227,18 @@ function printUserInput(){
 
 
 Main(){
-    banner
-    check_root
-    check_ram
-    check_x64
-    check_ubuntu
+    #banner
+    #check_root
+    #check_ram
+    #check_x64
+    #check_ubuntu
 
-    getOdooVersion
-    getEditionName
-    getPortNumber
-    IsCloud
-    getDomainName
-    getSSLEmail
+    #getOdooVersion
+    #getEditionName
+    #getPortNumber
+    #IsCloud
+    #getDomainName
+    #getSSLEmail
     generateMasterPassword
     printUserInput
 
