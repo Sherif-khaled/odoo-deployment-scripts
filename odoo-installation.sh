@@ -393,36 +393,92 @@ function get_ssl_email() {
   done
 }
 
+#######################################
+# Function Name: generate_master_password
+# Description: Generate a master password for Odoo.
+# 
+# This function generates a random master password for Odoo. It uses the characters
+# specified in the $characters variable. If the `passlib` library is not installed,
+# it installs it. The hashed password is stored in the HASHED_PASSWORD variable.
+# 
+# Globals:
+#   MASTER_PASSWORD (string) - Stores the generated master password.
+#   HASHED_PASSWORD (string) - Stores the hashed master password.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Generates and stores a master password and its hash.
+#######################################
 function generate_master_password() {
+  characters='A-Za-z0-9!@#$%^&*()_+'
+  MASTER_PASSWORD=$(tr -dc "$characters" < /dev/urandom | head -c 15)
 
-   characters='A-Za-z0-9!@#$%^&*()_+'
-   MASTER_PASSWORD=$(tr -dc "$characters" < /dev/urandom | head -c 15)
+  # Check if passlib is installed
+  if ! pip3 show passlib &> /dev/null; then
+    echo "passlib is not installed. Installing passlib..."
+    pip3 install passlib
+  fi
 
-   # Check if passlib is installed
-    if ! pip3 show passlib &> /dev/null; then
-        echo "passlib is not installed. Installing passlib..."
-        pip3 install passlib
-    fi
-
-   HASHED_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$MASTER_PASSWORD}'))")
+  HASHED_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$MASTER_PASSWORD}'))")
 }
-function print_user_input(){
+
+#######################################
+# Function Name: print_user_input
+# Description: Display user input before proceeding with installation.
+# 
+# This function displays the user's input, including the port number, domain name,
+# SSL email, choice of enterprise edition, and generated master password. It then prompts
+# the user to confirm if they want to continue with the installation.
+# 
+# Globals:
+#   SYS_PORT (integer) - User's chosen port number.
+#   DOMAIN_NAME (string) - User's entered domain name, if not cloud then will assign http://localhost.
+#   SSL_EMAIL (string) - User's entered email address.
+#   ENABLE_ENTERPRISE (boolean) - User's choice of enterprise edition.
+#   MASTER_PASSWORD (string) - Generated master password.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Displays user input and prompts the user to confirm the installation.
+#######################################
+function print_user_input() {
   echo -e "$YELLOW ********************************************
         * Port Number Is: $SYS_PORT                         
         * Domain Name Is: $DOMAIN_NAME                      
         * SSL E-Mail Is:  $SSL_EMAIL
-        * Enterprise Edition: $ENABLE_ENTERPRISE
+        * Enterprise Edition: $ENABLE_ENTERPRIPRISE
         * Master Password: $MASTER_PASSWORD                                                                        
         *******************************************************
         "
-  echo -e "$LGREEN Do you want to contenue installation? (y)es, (n)o :"
-  read  -r -p ' ' INPUT
+  echo -e "$LGREEN Do you want to continue installation? (y)es, (n)o :"
+  read -r -p ' ' INPUT
   case $INPUT in
-    [Yy]* ) echo -e "installing now";;
+    [Yy]* ) echo -e "Installing now";;
     [Nn]* ) exit 0;;
   esac
 }
-function upgrade_system(){
+
+#######################################
+# Function Name: upgrade_system
+# Description: Update system packages, upgrade the system, install Microsoft fonts, and remove unnecessary packages.
+# 
+# This function updates the package lists, upgrades the system, installs Microsoft fonts, and removes
+# unnecessary packages.
+# 
+# Globals:
+#   None
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Performs system updates and upgrades, installs fonts, and removes unnecessary packages.
+#######################################
+function upgrade_system() {
   echo -e "\n---- Updating Package Lists ----"
   sudo apt update -y
 
@@ -437,37 +493,114 @@ function upgrade_system(){
   sudo apt clean
   sudo apt autoclean
 }
-# configure and allow ports in UFW firewall
-function configure_ufw(){
+
+#######################################
+# Function Name: configure_ufw
+# Description: Configure and allow ports in the UFW firewall.
+# 
+# This function starts the UFW firewall service and allows specific ports for SSH, Odoo, long polling, HTTP, and HTTPS.
+# 
+# Globals:
+#   SYS_PORT (integer) - User's chosen port number for Odoo.
+#   answer (string) - User's input for UFW enable (typically 'y' to confirm).
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Configures and allows specific ports in the UFW firewall.
+#######################################
+function configure_ufw() {
   sudo service ufw start
-  sudo ufw allow ssh       # allow ssh port
-  sudo ufw allow "$SYS_PORT"/tcp # allow odoo port
-  sudo ufw allow 8072/tcp  # allow longpolling port
-  sudo ufw allow 80/tcp    # allow http port
-  sudo ufw allow 443/tcp # allow https port
+  sudo ufw allow ssh               # Allow SSH port
+  sudo ufw allow "$SYS_PORT"/tcp   # Allow Odoo port
+  sudo ufw allow 8072/tcp          # Allow long polling port
+  sudo ufw allow 80/tcp            # Allow HTTP port
+  sudo ufw allow 443/tcp           # Allow HTTPS port
 
   echo "y" | sudo ufw enable "$answer"
 }
-#Install all dependencies
+#######################################
+# Function Name: install_dependencies
+# Description: Install system dependencies required for the Odoo installation.
+# 
+# This function installs a list of system dependencies that are necessary for the Odoo installation. The dependencies include various tools and libraries needed for different aspects of the Odoo system.
+# 
+# Dependencies:
+#   - git
+#   - curl
+#   - unzip
+#   - python3-pip
+#   - build-essential
+#   - wget
+#   - libfreetype6-dev
+#   - libxml2-dev
+#   - libzip-dev
+#   - libldap2-dev
+#   - libsasl2-dev
+#   - node-less
+#   - libjpeg-dev
+#   - zlib1g-dev
+#   - libpq-dev
+#   - libxslt1-dev
+#   - libldap2-dev
+#   - libtiff5-dev
+#   - libjpeg8-dev
+#   - libopenjp2-7-dev
+#   - liblcms2-dev
+#   - libwebp-dev
+#   - libharfbuzz-dev
+#   - libfribidi-dev
+#   - libxcb1-dev
+#   - python3-dev
+#   - python3-venv
+#   - python3-wheel
+#   - python3-setuptools
+#   - python3-tk
+#   - python3-gevent
+#   - postgresql
+#   - postgresql-server-dev-all
+#   - nginx
+#   - certbot
+#   - libssl1.1
+# 
+# This function iterates through the list of dependencies and installs each one using the apt-get install command. It also installs Node.js, NPM, and rtlcss for LTR (Left-to-Right) support.
+# 
+# Globals:
+#   None
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Installs system dependencies and additional tools for Odoo installation.
+#######################################
 function install_dependencies(){
+  declare -a dependencies=(
+    "git" "curl" "unzip" "python3-pip" "build-essential" "wget" "libfreetype6-dev" "libxml2-dev" "libzip-dev" "libldap2-dev" "libsasl2-dev"
+    "node-less" "libjpeg-dev" "zlib1g-dev" "libpq-dev" "libxslt1-dev" "libldap2-dev" "libtiff5-dev" "libjpeg8-dev" "libopenjp2-7-dev"
+    "liblcms2-dev" "libwebp-dev" "libharfbuzz-dev" "libfribidi-dev" "libxcb1-dev" "python3-dev" "python3-venv" "python3-wheel" "python3-setuptools"
+    "python3-tk" "python3-gevent" "postgresql" "postgresql-server-dev-all" "nginx" "certbot" "libssl1.1"
+  )
 
-  declare -a dependencies=("git" "curl" "unzip" "python3-pip" "build-essential" "wget" "libfreetype6-dev" "libxml2-dev" "libzip-dev" "libldap2-dev" "libsasl2-dev"
-                           "node-less" "libjpeg-dev" "zlib1g-dev" "libpq-dev" "libxslt1-dev" "libldap2-dev" "libtiff5-dev" "libjpeg8-dev" "libopenjp2-7-dev"
-                           "liblcms2-dev" "libwebp-dev" "libharfbuzz-dev" "libfribidi-dev" "libxcb1-dev" "python3-dev" "python3-venv" "python3-wheel" "python3-setuptools"
-                           "python3-tk" "python3-gevent" "postgresql" "postgresql-server-dev-all" "nginx" "certbot" "libssl1.1")
-
-
- for (( i = 0; i < ${#dependencies[@]} ; i++ )); do
+   for (( i = 0; i < ${#dependencies[@]} ; i++ )); do
      printf "%s\n $YELLOW **** Basic dependencies installing now: ${dependencies[$i]} ***** $ENDCOLOR \n\n"
 
      # Run each command in array
      eval "apt-get install ${dependencies[$i]} -y"
- done
+   done
 
-  echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
-  sudo apt-get install nodejs npm -y
-  sudo npm install -g rtlcss
+   for dependency in "${dependencies[@]}"; do
+    echo -e "\n$YELLOW **** Installing dependency: $dependency **** $ENDCOLOR\n"
+    apt-get install "$dependency" -y
+  }
+
+  echo -e "\n---- Installing Node.js, NPM, and rtlcss for LTR support ----"
+  apt-get install nodejs npm -y
+  npm install -g rtlcss
 }
+
+
 # Create postgresql user and odoo user
 function create_user(){
   #create odoo user
