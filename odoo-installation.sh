@@ -56,55 +56,102 @@ function banner(){
     echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR"
 
 }
-# Check root privilege,the script required root privilege to make all configurations
-check_root()
-{
+# Function to Check root privileges,the script required root privileges to make all configurations
+function check_root() {
+    # Print a message to indicate that root privilege is being checked
     echo -e "$BLUE [ * ] Check root privilege"
     sleep 1
 
-   if [ `id -u` != 0 ];then
-      echo -e "$RED [ X ]$BLUE You are not a root user !\n";
-      echo -e "$RED Sorry, You must be root user to run this script....";
-      exit 0
+    # Check if the current user's UID is not equal to 0 (root)
+    if [ "$(id -u)" != 0 ]; then
+        # Print an error message in case the user is not root
+        echo -e "$RED [ X ]$BLUE You are not a root user !"
+        echo -e "$RED Sorry, You must be a root user to run this script...."
+        exit 0
     else
-      echo -e "$GREEN [ ✔ ]$BLUE Your User Is ➜$GREEN Root!\n";
-      sleep 1
-   fi  
+        # Print a success message if the user is root
+        echo -e "$GREEN [ ✔ ]$BLUE Your User Is ➜$GREEN Root!"
+        sleep 1
+    fi
 }
-#Check RAM Capacity
-check_ram() {
-  MEM=`grep MemTotal /proc/meminfo | awk '{print $2}'`
-  MEM=$((MEM/1000))
-  if (( $MEM < 2048 )); then 
-     echo -e "$RED Sorry, Your server needs to have (at least) 2G of memory.....";
-     exit 0
-    else
-     echo -e "$GREEN [ ✔ ]$BLUE Your Ram Size Is ➜$GREEN Good!\n";
-     sleep 1
+# Function to check available RAM and ensure it's at least 2GB
+function check_ram() {
+  # Get the total system memory in KB and convert it to MB
+  MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+  MEM=$((MEM / 1000))
+
+  # Check if the available memory is less than 2GB (2048MB)
+  if (( MEM < 2048 )); then
+    # Print an error message if the memory is insufficient
+    echo -e "$RED [ X ]$BLUE Insufficient RAM: Your server needs at least 2GB of memory."
+    exit 1
+  else
+    # Print a success message if the memory is sufficient
+    echo -e "$GREEN [ ✔ ]$BLUE RAM Check: Your system has at least 2GB of memory."
   fi
 }
-#Check CPU Arctecture
-check_x64() {
-  UNAME=`uname -m`
-  if [ "$UNAME" != "x86_64" ]; then 
-     echo -e "$RED Sorry, You must run this command on a 64-bit server.....";
-     exit 0
-    else
-     echo -e "$GREEN [ ✔ ]$BLUE Your CPU arctecture Is ➜$GREEN Good!\n";
-     sleep 1
+#######################################
+# Function Name: check_x64
+# Description: This function checks if the system is running on a 64-bit architecture.
+# 
+# Globals:
+#   None
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Writes a success message to stdout if the architecture is 64-bit.
+#   - Writes an error message to stdout and exits with a non-zero status if the architecture is not 64-bit.
+#######################################
+function check_x64() {
+  # Get the machine architecture using `uname -m`
+  UNAME=$(uname -m)
+  
+  # Check if the architecture is "x86_64" (64-bit)
+  if [ "$UNAME" != "x86_64" ]; then
+    # Print an error message if the architecture is not 64-bit
+    echo -e "$RED [ X ]$BLUE This command must be run on a 64-bit server."
+    exit 1
+  else
+    # Print a success message if the architecture is 64-bit
+    echo -e "$GREEN [ ✔ ]$BLUE CPU Architecture: Your server is running a 64-bit system."
   fi
 }
-#Check OS
-check_ubuntu(){
+#######################################
+# Function Name: check_ubuntu
+# Description: This function checks if the Ubuntu version is supported.
+# 
+# It uses `lsb_release -r` to retrieve the Ubuntu release version and compares it
+# to a list of supported versions. If the version is supported, it prints a success message.
+# If the version is not supported, it prints an error message and exits with a status code.
+# 
+# Globals:
+#   None
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Writes a success message to stdout if the Ubuntu version is supported.
+#   - Writes an error message to stdout and exits with a non-zero status if the version is not supported.
+#######################################
+function check_ubuntu() {
+  # Get the Ubuntu release version
   RELEASE=$(lsb_release -r | sed 's/^[^0-9]*//g')
+  
+  # Check if the Ubuntu version is supported
   if [ "$RELEASE" == "22.10" ] || [ "$RELEASE" == "20.04" ]; then 
-     echo -e "$GREEN [ ✔ ]$BLUE Your ubuntu version Is ➜$GREEN Good!\n";
+     # Print a success message if the version is supported
+     echo -e "$GREEN [ ✔ ]$BLUE Your Ubuntu version Is ➜$GREEN Good!\n";
      sleep 1
-    else
-     echo -e "$RED Sorry, This script support only ubuntu version [20.04 - 22.10]";
-     exit 0
+  else
+     # Print an error message and exit if the version is not supported
+     echo -e "$RED Sorry, This script supports only Ubuntu versions [20.04 - 22.10].";
+     exit 1
   fi
 }
+
 #generate script errors
 err(){
   echo -e "install-odoo.sh say: $RED $1 $ENDCOLOR"
