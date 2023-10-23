@@ -306,7 +306,33 @@ function configure_logs(){
   mkdir /var/log/odoo"$ODOO_VERSION"
   chown odoo"$ODOO_VERSION":odoo"$ODOO_VERSION" /var/log/odoo"$ODOO_VERSION"
 }
+function create_odoo_file(){
+  if [ "$ENABLE_ENTERPRISE" = true ]; then
+    addons_path="/opt/odoo$ODOO_VERSION/odoo/addons,/opt/odoo$ODOO_VERSION/enterprise,/opt/odoo$ODOO_VERSION/custom-addons"
+  else
+    addons_path="/opt/odoo$ODOO_VERSION/odoo/addons,/opt/odoo$ODOO_VERSION/custom-addons"
+  fi
 
+  if [ "$IsCloud" = true ]; then
+    proxy_value="True"
+  else
+    proxy_value="False"
+  fi
+  
+  cat > /etc/odoo"$ODOO_VERSION".conf << HERE
+[options]
+; This is the password that allows database operations:
+admin_passwd = $HASHED_PASSWORD
+db_host = False
+db_port = False
+db_user = odoo$ODOO_VERSION
+db_password = False
+proxy_mode = $proxy_value
+xmlrpc_port = $SYS_PORT
+addons_path = $addons_path
+logfile = /var/log/odoo$ODOO_VERSION/odoo$ODOO_VERSION.log
+HERE
+}
 Main(){
     banner
     check_root
