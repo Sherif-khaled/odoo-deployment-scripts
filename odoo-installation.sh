@@ -197,7 +197,9 @@ function getSSLEmail() {
   done
 }
 function generateMasterPassword() {
-   MASTER_PASSWORD= tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 15
+
+   characters='A-Za-z0-9!@#$%^&*()_+'
+   MASTER_PASSWORD=$(tr -dc "$characters" < /dev/urandom | head -c 15)
 
    # Check if passlib is installed
     if ! pip3 show passlib &> /dev/null; then
