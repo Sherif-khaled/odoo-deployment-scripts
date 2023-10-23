@@ -293,6 +293,11 @@ function installing_odoo(){
   su -c "pip3 install asn1crypto" odoo"$ODOO_VERSION"
   su -c "pip3 install pandas" odoo"$ODOO_VERSION"
   su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo"$ODOO_VERSION"
+
+  if [ "$ENABLE_ENTERPRISE" = true ]; then
+    su -c "git clone -b $ODOO_VERSION.0 https://${GITHUB_SUPER_ACCESS}@github.com/odoo/enterprise.git /opt/odoo$ODOO_VERSION/enterprise"
+  fi
+
   su -c "deactivate"
   su -c "mkdir /opt/odoo$ODOO_VERSION/custom-addons"
 }
@@ -317,6 +322,7 @@ Main(){
     install_dependencies
     create_user
     install_wkhtmltopdf
+    installing_odoo
 
 
 }
