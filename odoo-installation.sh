@@ -142,6 +142,20 @@ function getEditionName(){
     [Nn]* ) ENABLE_ENTERPRISE=false;;
   esac
 }
+function get_enterprise_token_access() {
+
+  while true; do
+    read -p "Enter the odoo enterprise repo token access: " DOMAIN_NAME
+
+    if [[ -z "$GITHUB_SUPER_ACCESS" ]]; then
+      echo "Token access cannot be empty. Please try again."
+    elif ! [[ "$DOMAIN_NAME" =~ $DOMAIN_REGEX ]]; then
+      echo "Invalid domain format. The domain must be like 'example.com' or 'sub.example.com'. Please try again."
+    else
+      break  # Valid domain name, exit the loop
+    fi
+  done
+}
 function getPortNumber(){
   re='^[0-9]+$'
   while [[ -z "$SYS_PORT" ]] || ! ((8060 <= SYS_PORT && SYS_PORT <= 8090))
