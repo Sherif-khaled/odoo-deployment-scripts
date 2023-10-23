@@ -283,6 +283,16 @@ function install_wkhtmltopdf(){
   wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
   sudo apt install ./wkhtmltox_0.12.5-1.bionic_amd64.deb -y
 }
+function installing_odoo(){
+  git clone https://www.github.com/odoo/odoo --depth 1 --branch "$ODOO_VERSION".0 /opt/odoo"$ODOO_VERSION"/odoo
+  cd /opt/odoo"$ODOO_VERSION"
+  pip3 install wheel
+  pip3 install paramiko
+  pip3 install asn1crypto
+  pip3 install pandas
+  pip3 install -r /opt/odoo"$ODOO_VERSION"/odoo/requirements.txt
+  mkdir /opt/odoo"$ODOO_VERSION"/custom-addons
+}
 
 Main(){
     banner
