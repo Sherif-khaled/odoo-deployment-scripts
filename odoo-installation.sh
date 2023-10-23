@@ -153,7 +153,7 @@ function get_enterprise_username() {
 function get_enterprise_password() {
 
   while true; do
-    read -p "Enter the odoo enterprise repository password: " ENTERPRISE_REPO_PASSWPRD
+    read -s -p "Enter the odoo enterprise repository password: " ENTERPRISE_REPO_PASSWPRD
 
     if [[ -z "$ENTERPRISE_REPO_PASSWPRD" ]]; then
       echo "Password access cannot be empty. Please try again."
@@ -313,7 +313,7 @@ function installing_odoo(){
   su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo"$ODOO_VERSION"
 
   if [ "$ENABLE_ENTERPRISE" = true ]; then
-    su -c "git clone -b $ODOO_VERSION.0 https://${GITHUB_SUPER_ACCESS}@github.com/odoo/enterprise.git /opt/odoo$ODOO_VERSION/enterprise"
+    su -c "git clone -b $ODOO_VERSION.0 https://${ENTERPRISE_REPO_USERNAME}:${ENTERPRISE_REPO_PASSWPRD}@github.com/odoo/enterprise.git /opt/odoo$ODOO_VERSION/enterprise"
   fi
 
   su -c "deactivate"
