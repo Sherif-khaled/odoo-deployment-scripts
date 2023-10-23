@@ -251,22 +251,45 @@ function configure_ufw(){
 
   echo "y" | sudo ufw enable "$answer"
 }
+#Install all dependencies
+function install_dependencies(){
+
+  declare -a dependencies=("git" "curl" "unzip" "python3-pip" "build-essential" "wget" "libfreetype6-dev" "libxml2-dev" "libzip-dev" "libldap2-dev" "libsasl2-dev"
+                           "node-less" "libjpeg-dev" "zlib1g-dev" "libpq-dev" "libxslt1-dev" "libldap2-dev" "libtiff5-dev" "libjpeg8-dev" "libopenjp2-7-dev"
+                           "liblcms2-dev" "libwebp-dev" "libharfbuzz-dev" "libfribidi-dev" "libxcb1-dev" "python3-dev" "python3-venv" "python3-wheel" "python3-setuptools"
+                           "python3-tk" "python3-gevent" "postgresql" "postgresql-server-dev-all" "nginx" "certbot" "libssl1.1")
+
+
+ for (( i = 0; i < ${#dependencies[@]} ; i++ )); do
+     printf "%s\n $YELLOW **** Basic dependencies installing now: ${dependencies[$i]} ***** $ENDCOLOR \n\n"
+
+     # Run each command in array
+     eval "apt-get install ${dependencies[$i]} -y"
+ done
+
+  echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
+  sudo apt-get install nodejs npm -y
+  sudo npm install -g rtlcss
+}
 
 Main(){
-    #banner
-    #check_root
-    #check_ram
-    #check_x64
-    #check_ubuntu
+    banner
+    check_root
+    check_ram
+    check_x64
+    check_ubuntu
 
-    #getOdooVersion
-    #getEditionName
-    #getPortNumber
-    #IsCloud
-    #getDomainName
-    #getSSLEmail
+    getOdooVersion
+    getEditionName
+    getPortNumber
+    IsCloud
+    getDomainName
+    getSSLEmail
     generateMasterPassword
     printUserInput
+
+    configure_ufw
+    install_dependencies
 
 
 }
