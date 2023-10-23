@@ -120,7 +120,17 @@ err(){
   echo -e "install-odoo.sh say: $RED $1 $ENDCOLOR"
   exit 1
 }
-
+function getOdooVersion(){
+  re='^[0-9]+$'
+  while [[ -z "$ODOO_VERSION" ]]
+  do
+    read -p "Choose the odoo version between [15 - 16]: " ODOO_VERSION
+    if ! [[ $ODOO_VERSION =~ $re ]] || (( $ODOO_VERSION < 15 )) || (( $ODOO_VERSION > 16 )); then
+      echo "Enter a valid number between 15 and 16"
+      ODOO_VERSION=""
+    fi
+  done
+}
 
 
 
@@ -130,5 +140,7 @@ Main(){
     check_ram
     check_x64
     check_ubuntu
+
+    getOdooVersion
 }
 Main
