@@ -212,8 +212,9 @@ function printUserInput(){
         * Port Number Is: $SYS_PORT                         
         * Domain Name Is: $DOMAIN_NAME                      
         * SSL E-Mail Is:  $SSL_EMAIL
-        * Enterprise Edition: $ENABLE_ENTERPRISE                                                                        
-        *****************************************************
+        * Enterprise Edition: $ENABLE_ENTERPRISE
+        * Master Password: $MASTER_PASSWORD                                                                        
+        *******************************************************
         "
   echo -e "$LGREEN Do you want to contenue installation? (y)es, (n)o :"
   read  -p ' ' INPUT
@@ -227,18 +228,19 @@ function printUserInput(){
 
 Main(){
     banner
-    #check_root
-    #check_ram
-    #check_x64
-    #check_ubuntu
+    check_root
+    check_ram
+    check_x64
+    check_ubuntu
 
-    #getOdooVersion
-    #getEditionName
-    #getPortNumber
-    #IsCloud
-    #getDomainName
-    #getSSLEmail
+    getOdooVersion
+    getEditionName
+    getPortNumber
+    IsCloud
+    getDomainName
+    getSSLEmail
     generateMasterPassword
+    printUserInput
 
 
 }
