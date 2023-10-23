@@ -333,6 +333,26 @@ addons_path = $addons_path
 logfile = /var/log/odoo$ODOO_VERSION/odoo$ODOO_VERSION.log
 HERE
 }
+function create_service_file(){
+cat > /etc/systemd/system/odoo"$ODOO_VERSION".service << HERE
+[Unit]
+Description=Odoo$ODOO_VERSION
+Requires=postgresql.service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+SyslogIdentifier=odoo$ODOO_VERSION
+PermissionsStartOnly=true
+User=odoo$ODOO_VERSION
+Group=odoo$ODOO_VERSION
+ExecStart=/opt/odoo$ODOO_VERSION/odoo/odoo-bin -c /etc/odoo$ODOO_VERSION.conf
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target
+HERE
+}
 Main(){
     banner
     check_root
