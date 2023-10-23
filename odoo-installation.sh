@@ -206,7 +206,21 @@ function generateMasterPassword() {
     fi
 
    HASHED_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$MASTER_PASSWORD}'))")
-
+}
+function printUserInput(){
+  echo -e "$YELLOW ********************************************
+        * Port Number Is: $SYS_PORT                         
+        * Domain Name Is: $DOMAIN_NAME                      
+        * SSL E-Mail Is:  $SSL_EMAIL
+        * Enterprise Edition: $ENABLE_ENTERPRISE                                                                        
+        *****************************************************
+        "
+  echo -e "$LGREEN Do you want to contenue installation? (y)es, (n)o :"
+  read  -p ' ' INPUT
+  case $INPUT in
+    [Yy]* ) echo -e "installing now";;
+    [Nn]* ) exit 0;;
+  esac
 }
 
 
