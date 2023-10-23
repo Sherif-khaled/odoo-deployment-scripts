@@ -271,6 +271,14 @@ function install_dependencies(){
   sudo apt-get install nodejs npm -y
   sudo npm install -g rtlcss
 }
+# Create postgresql user and odoo user
+function create_user(){
+  #create odoo user
+  sudo useradd -m -d /opt/odoo"$ODOO_VERSION" -U -r -s /bin/bash odoo"$ODOO_VERSION"
+  sudo adduser odoo"$ODOO_VERSION" sudo
+  #create postgresql user
+  sudo su - postgres -c "createuser -s odoo$ODOO_VERSION"
+}
 
 Main(){
     banner
@@ -290,6 +298,7 @@ Main(){
 
     configure_ufw
     install_dependencies
+    create_user
 
 
 }
