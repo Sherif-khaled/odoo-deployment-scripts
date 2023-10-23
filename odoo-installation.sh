@@ -164,7 +164,7 @@ function IsCloud(){
   esac
 }
 function getDomainName() {
-  local DOMAIN_NAME
+
   local DOMAIN_REGEX="^([A-Za-z0-9.-]+\.)+[A-Za-z]{2,}$"  # Regular expression to validate domain names with subdomains
 
   while true; do
@@ -180,15 +180,15 @@ function getDomainName() {
   done
 }
 function getSSLEmail() {
-    local DEFAULT_SSL_EMAIL="user@example.com"
-    local EMAIL_REGEX="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+
+  local EMAIL_REGEX="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
   while true; do
-    read -p "Please enter your email address (e.g. 'user@example.com'): " DEFAULT_SSL_EMAIL
+    read -p "Please enter your email address (e.g. 'user@example.com'): " SSL_EMAIL
 
-    if [[ -z "$DEFAULT_SSL_EMAIL" ]]; then
+    if [[ -z "$SSL_EMAIL" ]]; then
       echo "Email Address cannot be empty. Please try again."
-    elif ! [[ "$DEFAULT_SSL_EMAIL" =~ $EMAIL_REGEX ]]; then
+    elif ! [[ "$SSL_EMAIL" =~ $EMAIL_REGEX ]]; then
       echo "Invalid email format. The email must be like 'user@example.com'. Please try again."
     else
       break  # Valid email address, exit the loop
