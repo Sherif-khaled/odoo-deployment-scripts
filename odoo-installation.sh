@@ -22,7 +22,7 @@ HASHED_PASSWORD=
 ENABLE_ENTERPRISE=false
 ENTERPRISE_REPO_USERNAME=
 ENTERPRISE_REPO_PASSWPRD=
-IsCloud=true
+is_cloud=true
 
 function banner(){
     
@@ -90,6 +90,7 @@ function check_ram() {
     echo -e "$GREEN [ ✔ ]$BLUE RAM Check: Your system has at least 2GB of memory."
   fi
 }
+
 #######################################
 # Function Name: check_x64
 # Description: This function checks if the system is running on a 64-bit architecture.
@@ -118,6 +119,7 @@ function check_x64() {
     echo -e "$GREEN [ ✔ ]$BLUE CPU Architecture: Your server is running a 64-bit system."
   fi
 }
+
 #######################################
 # Function Name: check_ubuntu
 # Description: This function checks if the Ubuntu version is supported.
@@ -157,74 +159,196 @@ err(){
   echo -e "install-odoo.sh say: $RED $1 $ENDCOLOR"
   exit 1
 }
-function getOdooVersion(){
+
+#######################################
+# Function Name: get_odoo_version
+# Description: This function prompts the user to choose an Odoo version between 15 and 16.
+# 
+# It uses a while loop to repeatedly prompt the user until a valid version is provided. A valid
+# version is an integer between 15 and 16 (inclusive). If an invalid version is entered, the
+# function continues to prompt the user for a valid input.
+# 
+# Globals:
+#   None
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Reads the Odoo version chosen by the user from the standard input and stores it in the
+#     variable ODOO_VERSION.
+#######################################
+function get_odoo_version() {
   re='^[0-9]+$'
-  while [[ -z "$ODOO_VERSION" ]]
-  do
-    read -p "Choose the odoo version between [15 - 16]: " ODOO_VERSION
-    if ! [[ $ODOO_VERSION =~ $re ]] || (( $ODOO_VERSION < 15 )) || (( $ODOO_VERSION > 16 )); then
+  while [[ -z "$ODOO_VERSION" ]]; do
+    read -r -p "Choose the Odoo version between [15 - 16]: " ODOO_VERSION
+    if ! [[ $ODOO_VERSION =~ $re ]] || ((ODOO_VERSION < 15)) || ((ODOO_VERSION > 16)); then
       echo "Enter a valid number between 15 and 16"
       ODOO_VERSION=""
     fi
   done
 }
-function getEditionName(){
 
-  echo -e "$LGREEN Do you want to install enterprise edition? (y)es, (n)o :"
-  read  -p ' ' INPUT
+#######################################
+# Function Name: get_edition_name
+# Description: Prompt the user to choose whether to install the enterprise edition.
+# 
+# This function displays a message asking the user if they want to install the enterprise edition.
+# The user can choose 'y' for yes or 'n' for no.
+# 
+# Globals:
+#   ENABLE_ENTERPRISE (boolean) - Stores the user's choice (true for 'y' or false for 'n').
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Prompts the user for input and stores their choice in ENABLE_ENTERPRISE.
+#######################################
+function get_edition_name() {
+  echo -e "$LGREEN Do you want to install the enterprise edition? (y)es, (n)o :"
+  read -r -p ' ' INPUT
   case $INPUT in
     [Yy]* ) ENABLE_ENTERPRISE=true;;
     [Nn]* ) ENABLE_ENTERPRISE=false;;
   esac
 }
-function get_enterprise_username() {
 
+#######################################
+# Function Name: get_enterprise_username
+# Description: Prompt the user to enter their Odoo enterprise repository username.
+# 
+# This function uses a while loop to repeatedly prompt the user until a non-empty
+# username is provided. It stores the username in the ENTERPRISE_REPO_USERNAME variable.
+# 
+# Globals:
+#   ENTERPRISE_REPO_USERNAME (string) - Stores the user's Odoo enterprise repository username.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Prompts the user for input and stores the username in ENTERPRISE_REPO_USERNAME.
+#######################################
+function get_enterprise_username() {
   while true; do
-    read -p "Enter the odoo enterprise repository username: " ENTERPRISE_REPO_USERNAME
+    read -r -p "Enter the Odoo enterprise repository username: " ENTERPRISE_REPO_USERNAME
 
     if [[ -z "$ENTERPRISE_REPO_USERNAME" ]]; then
-      echo "Username access cannot be empty. Please try again."
+      echo "Username cannot be empty. Please try again."
+    else
+      break
     fi
   done
 }
+
+#######################################
+# Function Name: get_enterprise_password
+# Description: Prompt the user to enter their Odoo enterprise repository password.
+# 
+# This function uses a while loop to repeatedly prompt the user for a password without
+# displaying it on the screen (using the -s option). It stores the password in the
+# ENTERPRISE_REPO_PASSWORD variable.
+# 
+# Globals:
+#   ENTERPRISE_REPO_PASSWORD (string) - Stores the user's Odoo enterprise repository password.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Prompts the user for input and stores the password in ENTERPRISE_REPO_PASSWORD.
+#######################################
 function get_enterprise_password() {
-
   while true; do
-    read -s -p "Enter the odoo enterprise repository password: " ENTERPRISE_REPO_PASSWPRD
+    read -r -s -p "Enter the Odoo enterprise repository password: " ENTERPRISE_REPO_PASSWORD
 
-    if [[ -z "$ENTERPRISE_REPO_PASSWPRD" ]]; then
-      echo "Password access cannot be empty. Please try again."
+    if [[ -z "$ENTERPRISE_REPO_PASSWORD" ]]; then
+      echo "Password cannot be empty. Please try again."
+    else
+      break
     fi
   done
 }
-function getPortNumber(){
+
+#######################################
+# Function Name: get_port_number
+# Description: Prompt the user to choose a port number between 8060 and 8090.
+# 
+# This function uses a while loop to repeatedly prompt the user until a valid port
+# number is provided. A valid port number is an integer between 8060 and 8090 (inclusive).
+# It stores the port number in the SYS_PORT variable.
+# 
+# Globals:
+#   SYS_PORT (integer) - Stores the chosen port number.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Prompts the user for input and stores the port number in SYS_PORT.
+#######################################
+function get_port_number() {
   re='^[0-9]+$'
   while [[ -z "$SYS_PORT" ]] || ! ((8060 <= SYS_PORT && SYS_PORT <= 8090))
   do
-    read -p "Choose the port number between [8060 - 8090]: " SYS_PORT
+    read -r -p "Choose the port number between [8060 - 8090]: " SYS_PORT
     if ! [[ $SYS_PORT =~ $re ]] ; then
       echo -e "Error: Not a valid number\n"
     elif ! ((8060 <= SYS_PORT && SYS_PORT <= 8090)); then
-      echo -e "Error: Port number is not within range [8060 - 8090]\n"
+      echo -e "Error: Port number is not within the range [8060 - 8090]\n"
       SYS_PORT=""
     fi
   done
 }
-function IsCloud(){
 
-  echo -e "$LGREEN Do you want to install the odoo on cloud server? (y)es, (n)o :"
-  read  -p ' ' INPUT
+#######################################
+# Function Name: is_cloud
+# Description: Prompt the user to choose whether to install Odoo on a cloud server.
+# 
+# This function displays a message asking the user if they want to install Odoo on a cloud server.
+# The user can choose 'y' for yes or 'n' for no. The function sets the is_cloud variable accordingly.
+# 
+# Globals:
+#   is_cloud (boolean) - Stores the user's choice (true for 'y' or false for 'n').
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Prompts the user for input and stores their choice in is_cloud.
+#######################################
+function is_cloud() {
+  echo -e "$LGREEN Do you want to install Odoo on a cloud server? (y)es, (n)o :"
+  read -r -p ' ' INPUT
   case $INPUT in
-    [Yy]* ) IsCloud=true;;
-    [Nn]* ) IsCloud=false;;
+    [Yy]* ) is_cloud=true;;
+    [Nn]* ) is_cloud=false;;
   esac
 }
-function getDomainName() {
 
+#######################################
+# Function Name: get_domain_name
+# Description: Prompt the user to enter a valid domain name (including subdomains, if any).
+# 
+# This function uses a while loop to repeatedly prompt the user until a valid domain name
+# is provided. A valid domain name follows the format 'example.com' or 'sub.example.com'. It
+# uses a regular expression to validate the format. The domain name is stored in the DOMAIN_NAME variable.
+# 
+# Globals:
+#   DOMAIN_NAME (string) - Stores the user's entered domain name.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Prompts the user for input and stores the domain name in DOMAIN_NAME.
+#######################################
+function get_domain_name() {
   local DOMAIN_REGEX="^([A-Za-z0-9.-]+\.)+[A-Za-z]{2,}$"  # Regular expression to validate domain names with subdomains
 
   while true; do
-    read -p "Enter the domain name (including subdomains, if any): " DOMAIN_NAME
+    read -r -p "Enter the domain name (including subdomains, if any): " DOMAIN_NAME
 
     if [[ -z "$DOMAIN_NAME" ]]; then
       echo "Domain name cannot be empty. Please try again."
@@ -235,12 +359,29 @@ function getDomainName() {
     fi
   done
 }
-function getSSLEmail() {
 
+#######################################
+# Function Name: get_ssl_email
+# Description: Prompt the user to enter a valid email address.
+# 
+# This function uses a while loop to repeatedly prompt the user until a valid email address
+# is provided. It uses a regular expression to validate the format. The email address is stored
+# in the SSL_EMAIL variable.
+# 
+# Globals:
+#   SSL_EMAIL (string) - Stores the user's entered email address.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Prompts the user for input and stores the email address in SSL_EMAIL.
+#######################################
+function get_ssl_email() {
   local EMAIL_REGEX="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
   while true; do
-    read -p "Please enter your email address (e.g. 'user@example.com'): " SSL_EMAIL
+    read -r -p "Please enter your email address (e.g. 'user@example.com'): " SSL_EMAIL
 
     if [[ -z "$SSL_EMAIL" ]]; then
       echo "Email Address cannot be empty. Please try again."
@@ -251,7 +392,8 @@ function getSSLEmail() {
     fi
   done
 }
-function generateMasterPassword() {
+
+function generate_master_password() {
 
    characters='A-Za-z0-9!@#$%^&*()_+'
    MASTER_PASSWORD=$(tr -dc "$characters" < /dev/urandom | head -c 15)
@@ -264,7 +406,7 @@ function generateMasterPassword() {
 
    HASHED_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$MASTER_PASSWORD}'))")
 }
-function printUserInput(){
+function print_user_input(){
   echo -e "$YELLOW ********************************************
         * Port Number Is: $SYS_PORT                         
         * Domain Name Is: $DOMAIN_NAME                      
@@ -274,7 +416,7 @@ function printUserInput(){
         *******************************************************
         "
   echo -e "$LGREEN Do you want to contenue installation? (y)es, (n)o :"
-  read  -p ' ' INPUT
+  read  -r -p ' ' INPUT
   case $INPUT in
     [Yy]* ) echo -e "installing now";;
     [Nn]* ) exit 0;;
@@ -376,7 +518,7 @@ function create_odoo_file(){
     addons_path="/opt/odoo$ODOO_VERSION/odoo/addons,/opt/odoo$ODOO_VERSION/custom-addons"
   fi
 
-  if [ "$IsCloud" = true ]; then
+  if [ "$is_cloud" = true ]; then
     proxy_value="True"
   else
     proxy_value="False"
@@ -515,24 +657,24 @@ Main(){
     check_x64
     check_ubuntu
 
-    getOdooVersion
-    getEditionName
+    get_odoo_version
+    get_edition_name
 
     if [ "$ENABLE_ENTERPRISE" = true ]; then
     get_enterprise_username
     get_enterprise_password
     fi
 
-    getPortNumber
-    IsCloud
+    get_port_number
+    is_cloud
 
-    if [ "$IsCloud" = true ]; then
-    getDomainName
-    getSSLEmail
+    if [ "$is_cloud" = true ]; then
+    get_domain_name
+    get_ssl_email
     fi
 
-    generateMasterPassword
-    printUserInput
+    generate_master_password
+    print_user_input
 
     configure_ufw
     install_dependencies
@@ -541,7 +683,7 @@ Main(){
     installing_odoo
     configure_odoo
 
-    if [ "$IsCloud" = true ]; then
+    if [ "$is_cloud" = true ]; then
     link_domain
     DOMAIN_NAME="https://$DOMAIN_NAME"
     else
