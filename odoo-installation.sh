@@ -5,19 +5,25 @@
 # 
 #         USAGE: ./odoo-installation.sh
 # 
-#   DESCRIPTION: This script performs a specific task or set of tasks. Provide
-#                a clear and concise description of the script's purpose and
-#                functionality.
+#   DESCRIPTION: This interactive Bash script guides the user through the
+#                installation of Odoo, supporting both Community and Enterprise
+#                editions for versions 15 and 16. It also installs additional
+#                required packages, sets up the Nginx web server, and configures
+#                Odoo for production use.
 # 
 #       OPTIONS: You can specify command-line options and their descriptions here.
-#  REQUIREMENTS: List any prerequisites or requirements, such as installed software
-#                or specific file locations.
+#       REQUIREMENTS: The script is designed to work on Ubuntu 20.04 or 22.10 and requires the following prerequisites:
+#                - Internet access for downloading packages and updates.
+#                - Administrative privileges to install software and configure system settings.
+#                - A registered domain name pointing to the server's IP address if installing on a cloud server.
+#                - Odoo Enterprise username and password if installing the Enterprise edition.
+#                Additional dependencies and configurations are automatically handled.
+
 #          BUGS: Describe known issues or bugs, if any.
 #         NOTES: Any additional notes or comments about the script.
-#        AUTHOR: Your Name
-#  ORGANIZATION: Your Organization
-#       CREATED: Date
-#      REVISION: Date
+#        AUTHOR: Sherif Khaled
+#       CREATED: 23-10-2023
+#      REVISION: 24-10-2023
 #
 #===============================================================================
 
@@ -1007,7 +1013,7 @@ function final_result() {
         "
 }
 
-
+# Main function: Orchestrates the Odoo installation process
 Main(){
     banner
     check_root
