@@ -115,8 +115,30 @@ phase4="Во имя человечества вы должны поддержа�
 
 phase5="以人类的名义，你们必须支持加沙。 以色列以哈马斯的名义在加沙实施种族灭绝，目标是儿童、妇女和老人。 以色列犯下了数十起暴行，其中最严重的是加沙地带中部浸信会医院大屠杀。 看看你的良心"
 
-phase6="בשם האנושות, עליך לעמוד לצידי עזה. ישראל מבצעת רצח עם בעזה, כאשר הילדים, הנשים והקשישים נפגעים בשם המלחמה בחמאס. ישראל ביצעה עשרות אכזבות, הגרועה ביותר מהן היא הטבח בבית החולים אל-מוואסי בלב עזה. הסתכלו על הודעת המזון שבך."
+phase6="בשם האנושות אתה חייב לעמוד עם עזה. ישראל מבצעת רצח עם בעזה, ומכוונת לילדים, נשים וקשישים בשם המלחמה בחמאס. ישראל ביצעה עשרות מעשי זוועה, שהגרוע שבהם הוא הטבח בפיצוץ בית החולים בעזה בלב עזה. תסתכל על המצפון שלך."
 
+phase_format() {
+  local phase="$1"
+  local textcolor="$2"
+  
+  # Define ANSI color codes for various text colors
+  case "$textcolor" in
+    "red")      color_code="\e[31m";;
+    "green")    color_code="\e[32m";;
+    "yellow")   color_code="\e[33m";;
+    "blue")     color_code="\e[34m";;
+    "magenta")  color_code="\e[35m";;
+    "cyan")     color_code="\e[36m";;
+    "white")    color_code="\e[37m";;
+    *)          color_code="\e[0m";;  # Default to no color (reset)
+  esac
+
+  # Reset text color after the phase text
+  reset_color="\e[0m"
+
+  # Print the phase text with the specified color
+  echo -e "${color_code}${phase}${reset_color}"
+}
 
 
 # Simulate typing for phase 1
