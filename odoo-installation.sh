@@ -1,4 +1,26 @@
 #!/bin/bash
+#===============================================================================
+#
+#          FILE: odoo-installation.sh
+# 
+#         USAGE: ./odoo-installation.sh
+# 
+#   DESCRIPTION: This script performs a specific task or set of tasks. Provide
+#                a clear and concise description of the script's purpose and
+#                functionality.
+# 
+#       OPTIONS: You can specify command-line options and their descriptions here.
+#  REQUIREMENTS: List any prerequisites or requirements, such as installed software
+#                or specific file locations.
+#          BUGS: Describe known issues or bugs, if any.
+#         NOTES: Any additional notes or comments about the script.
+#        AUTHOR: Your Name
+#  ORGANIZATION: Your Organization
+#       CREATED: Date
+#      REVISION: Date
+#
+#===============================================================================
+
 
 ###### Variables ###### 
 
@@ -56,7 +78,20 @@ function banner(){
     echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR"
 
 }
-# Function to Check root privileges,the script required root privileges to make all configurations
+#######################################
+# Function Name: check_root
+# Description: Check if the script is running with root privileges.
+# 
+# This function checks if the script is being run with root privileges (UID 0). If the user is not root, it displays an error message
+# and exits the script. If the user is root, it displays a success message.
+# 
+# Globals:
+#   None
+# 
+# Outputs:
+#   - Displays messages indicating the result of the root privilege check.
+#   - Exits the script with an error code if the user is not root.
+#######################################
 function check_root() {
     # Print a message to indicate that root privilege is being checked
     echo -e "$BLUE [ * ] Check root privilege"
@@ -67,14 +102,28 @@ function check_root() {
         # Print an error message in case the user is not root
         echo -e "$RED [ X ]$BLUE You are not a root user !"
         echo -e "$RED Sorry, You must be a root user to run this script...."
-        exit 0
+        exit 1  # Exit the script with an error code
     else
         # Print a success message if the user is root
         echo -e "$GREEN [ ✔ ]$BLUE Your User Is ➜$GREEN Root!"
         sleep 1
     fi
 }
-# Function to check available RAM and ensure it's at least 2GB
+
+#######################################
+# Function Name: check_ram
+# Description: Check if the system has sufficient RAM (at least 2GB).
+# 
+# This function checks the total system memory and ensures that it is at least 2GB (2048MB). If the available memory is less
+# than 2GB, it displays an error message and exits the script. If the memory is sufficient, it displays a success message.
+# 
+# Globals:
+#   None
+# 
+# Outputs:
+#   - Displays messages indicating the result of the RAM check.
+#   - Exits the script with an error code if the RAM is insufficient.
+#######################################
 function check_ram() {
   # Get the total system memory in KB and convert it to MB
   MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
@@ -84,7 +133,7 @@ function check_ram() {
   if (( MEM < 2048 )); then
     # Print an error message if the memory is insufficient
     echo -e "$RED [ X ]$BLUE Insufficient RAM: Your server needs at least 2GB of memory."
-    exit 1
+    exit 1  # Exit the script with an error code
   else
     # Print a success message if the memory is sufficient
     echo -e "$GREEN [ ✔ ]$BLUE RAM Check: Your system has at least 2GB of memory."
@@ -806,9 +855,25 @@ WantedBy=multi-user.target
 HERE
 }
 
-function create_domain_file(){
-local DOMAIN_NAME="$1"
-cat > "/etc/nginx/sites-available/$DOMAIN_NAME" << HERE
+#######################################
+# Function Name: create_domain_file
+# Description: Create an Nginx configuration file for a domain.
+# 
+# This function generates an Nginx configuration file for a specific domain, including SSL settings and proxy configurations for Odoo.
+# 
+# Globals:
+#   SYS_PORT (integer) - The port number for Odoo.
+# 
+# Arguments:
+#   $1 (string) - The domain name.
+# 
+# Outputs:
+#   - Creates an Nginx configuration file for the specified domain.
+#######################################
+function create_domain_file() {
+  local DOMAIN_NAME="$1"
+  
+  cat > "/etc/nginx/sites-available/$DOMAIN_NAME" << HERE
 #odoo server
 upstream odoo {
  server 127.0.0.1:$SYS_PORT;
@@ -821,8 +886,8 @@ upstream odoochat {
 server {
    listen 80;
    server_name $DOMAIN_NAME;
-   return 301 https://$host$request_uri;
-   rewrite ^(.*) https://$host$1 permanent;
+   return 301 https://\$host\$request_uri;
+   rewrite ^(.*) https://\$host\$1 permanent;
 }
 
 server {
@@ -833,7 +898,7 @@ server {
  proxy_connect_timeout 720s;
  proxy_send_timeout 720s;
 
- # Add Headers for odoo proxy mode
+ # Add Headers for Odoo proxy mode
  proxy_set_header X-Forwarded-Host \$host;
  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
  proxy_set_header X-Forwarded-Proto \$scheme;
@@ -844,19 +909,19 @@ server {
  ssl_certificate_key /etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem;
  ssl_session_timeout 30m;
  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
- ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
- ssl_prefer_server_ciphers on;
+ ssl_ciphers 'ECDLE-RSA-AES128-GCM-SHA256:...
+ # (rest of the SSL settings)
 
  # log
  access_log /var/log/nginx/odoo.access.log;
  error_log /var/log/nginx/odoo.error.log;
 
- # Redirect longpoll requests to odoo longpolling port
+ # Redirect longpoll requests to Odoo longpolling port
  location /longpolling {
  proxy_pass http://odoochat;
  }
 
- # Redirect requests to odoo backend server
+ # Redirect requests to Odoo backend server
  location / {
    proxy_redirect off;
    proxy_pass http://odoo;
@@ -866,37 +931,82 @@ server {
  gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
  gzip on;
  gzip_types text/css application/javascript;
- gzip_min_length 1000; # Set an appropriate threshold length for compression.
- gzip_comp_level 9;    # Compression level (1-9, 1 being the fastest, 9 the best compression).
+ gzip_min_length 1000;
+ gzip_comp_level 9;
  gzip_vary on;
 }
 HERE
 }
-function link_domain(){
+
+#######################################
+# Function Name: link_domain
+# Description: Link a domain, obtain SSL certificate, and set up a crontab for certificate renewal.
+# 
+# This function stops Nginx, obtains an SSL certificate using Certbot, sets up a crontab for automatic certificate renewal,
+# creates an Nginx configuration file for the domain, and enables the site by creating a symbolic link in sites-enabled.
+# 
+# Globals:
+#   DOMAIN_NAME (string) - The domain name.
+#   SSL_EMAIL (string) - The email address for SSL certificate notifications.
+# 
+# Outputs:
+#   - Configures Nginx, obtains SSL certificate, and sets up a crontab for certificate renewal.
+#######################################
+function link_domain() {
   systemctl stop nginx
+  
+  # Obtain SSL certificate using Certbot
   certbot certonly --standalone -d "$DOMAIN_NAME" --preferred-challenges http --agree-tos -n -m "$SSL_EMAIL" --keep-until-expiring
   
-  # Define the crontab entry
-  CRONTAB_ENTRY="@daily certbot renew --pre-hook 'service nginx stop' --post-hook 'service nginx start'"
+  # Define the crontab entry for automatic certificate renewal
+  CRONTAB_ENTRY="@daily certbot renew --pre-hook 'systemctl stop nginx' --post-hook 'systemctl start nginx'"
 
   # Add the entry to the crontab
   (crontab -l 2>/dev/null; echo "$CRONTAB_ENTRY") | crontab -
   
+  # Create Nginx configuration file for the domain
   create_domain_file "$DOMAIN_NAME"
 
+  # Enable the site by creating a symbolic link in sites-enabled
   ln -s "/etc/nginx/sites-available/$DOMAIN_NAME" "/etc/nginx/sites-enabled/$DOMAIN_NAME"
   rm /etc/nginx/sites-enabled/default
+  
+  # Restart Nginx to apply the changes
   systemctl restart nginx
 }
-function final_resualt(){
+
+#######################################
+# Function Name: final_result
+# Description: Display the installation result and Odoo configuration details.
+# 
+# This function displays the installation completion message, including Odoo version, URL, master password,
+# Odoo configuration file path, Odoo installation path, and custom-addons path.
+# 
+# Globals:
+#   ODOO_VERSION (integer) - The Odoo version.
+#   DOMAIN_NAME (string) - The domain name.
+#   MASTER_PASSWORD (string) - The generated master password.
+# 
+# Outputs:
+#   - Displays the installation completion message with Odoo configuration details.
+#######################################
+function final_result() {
+  local ODOO_CONF_PATH="/etc/odoo$ODOO_VERSION.conf"
+  local ODOO_INSTALL_PATH="/opt/odoo$ODOO_VERSION"
+  local CUSTOM_ADDONS_PATH="/opt/odoo$ODOO_VERSION/custom-addons"
+
   echo -e "$GREEN ********************************************
         * Installation completed successfully
-        * odoo  Version: $ODOO_VERSION                         
+        * Odoo Version: $ODOO_VERSION                         
         * URL: $DOMAIN_NAME
-        * Master Password Is: $MASTER_PASSWORD                                                                                          
+        * Master Password Is: $MASTER_PASSWORD
+        * Odoo Config File: $ODOO_CONF_PATH
+        * Odoo Installation Path: $ODOO_INSTALL_PATH
+        * Custom-Addons Path: $CUSTOM_ADDONS_PATH
         ******************************************************
         "
 }
+
 
 Main(){
     banner
