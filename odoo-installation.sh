@@ -38,6 +38,11 @@ YELLOW='\033[00;33m'
 BLUE='\033[00;34m'
 LGREEN='\033[01;32m'
 LYELLOW='\033[01;33m'
+BLUE='\033[01;34m'
+LPURPLE='\033[01;35m'
+LCYAN='\033[01;36m'
+LBRIGHTGREEN=
+LRED='\033[01;31m'
 HIGHLIGHT='\033[41m'
 
 #User Varibales
@@ -83,12 +88,73 @@ function banner(){
     echo -e "$YELLOW --------------------------------------------------------------- $ENDCOLOR"
     sleep 1
     echo -e "$RED-----------------------------------------------------------------------$ENDCOLOR"
-    echo -e "$YELLOW"In the name of humanity, you must stand with Gaza. Israel is committing genocide in Gaza, 
-            targeting children, women, and the elderly in the name of the war on Hamas. Israel has committed dozens of atrocities,
-            the worst of which is the Al-Mawasi Hospital massacre in the heart of Gaza. Look at your conscience.$ENDCOLOR"
-    echo -e        
-    echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR"
 
+    echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR\n"
+    gaza_support
+
+
+}
+
+function gaza_support(){
+    # Function to simulate typing
+type_text() {
+    text="$1"
+    for ((i = 0; i < ${#text}; i++)); do
+        echo -n "${text:$i:1}"
+        sleep 0.03 # Adjust the sleep duration for typing speed
+    done
+}
+
+phase1="In the name of humanity, you must stand with Gaza. Israel is committing genocide in Gaza, targeting children, women, and the elderly in the name of the war on Hamas. Israel has committed dozens of atrocities, the worst of which is the Gaza hospital blast massacre in the heart of Gaza. Look at your conscience."
+
+phase2="Au nom de l'humanité, vous devez soutenir Gaza. Israël commet un génocide à Gaza, ciblant les enfants, les femmes et les personnes âgées au nom de la guerre contre le Hamas. Israël a commis des dizaines d'atrocités, la pire étant le massacre de l'hôpital Gaza au cœur de Gaza. Regardez votre conscience."
+
+phase3="Im Namen der Menschlichkeit müssen Sie sich auf die Seite von Gaza stellen. Israel begeht in Gaza Völkermord, indem es Kinder, Frauen und alte Menschen im Namen des Krieges gegen die Hamas ins Visier nimmt. Israel hat Dutzende von Gräueltaten begangen, von denen die schlimmste das Massaker im Gaza-Krankenhaus im Herzen von Gaza ist. Schauen Sie auf Ihr Gewissen."
+
+phase4="Во имя человечности вы должны поддержать Газу. Израиль совершает геноцид в Газе, нацеливаясь на детей, женщин и пожилых людей во имя войны против ХАМАСа. Израиль совершил десятки зверств, самое страшное из которых - это массакр в больнице Аль-Маваси в самом сердце Газы. Посмотрите на свою совесть."
+
+phase5="以人道之名，你必须支持加沙。以色列正在以哈马斯为名在加沙实施种族灭绝，针对儿童、妇女和老年人。以色列已经犯下数十起暴行，其中最严重的是加沙心脏的Al-Mawasi医院大屠杀。审视你的良心。"
+
+phase6="בשם האנושות, עליך לעמוד לצידי עזה. ישראל מבצעת רצח עם בעזה, כאשר הילדים, הנשים והקשישים נפגעים בשם המלחמה בחמאס. ישראל ביצעה עשרות אכזבות, הגרועה ביותר מהן היא הטבח בבית החולים אל-מוואסי בלב עזה. הסתכלו על הודעת המזון שבך."
+
+# Simulate typing for phase 1
+echo -e "$LYELLOW"
+type_text "$phase1"
+echo -e "\n"
+printf -- '=%.0s' {1..60}
+echo -e "\n$ENDCOLOR"
+
+# Simulate typing for phase 2
+echo -e "$LPURPLE"
+type_text "$phase2"
+echo -e "\n"
+printf -- '=%.0s' {1..60}
+echo -e "\n$ENDCOLOR"
+
+# Simulate typing for phase 3
+echo -e "$LCYAN"
+type_text "$phase3"
+echo -e "\n"
+printf -- '=%.0s' {1..60}
+echo -e "\n$ENDCOLOR"
+
+# Print three empty lines
+echo -e "\n\n\n"
+
+# Simulate typing for phase 4
+type_text "$phase4"
+
+# Print three empty lines
+echo -e "\n\n\n"
+
+# Simulate typing for phase 5
+type_text "$phase5"
+
+# Print three empty lines
+echo -e "\n\n\n"
+
+# Simulate typing for phase 6
+type_text "$phase6"
 }
 #######################################
 # Function Name: check_root
