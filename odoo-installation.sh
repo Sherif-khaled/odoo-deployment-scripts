@@ -81,6 +81,12 @@ function banner(){
     echo -e "                     $LYELLOW sherif.khaleed@gmail.com        $ENDCOLOR"
     echo ""
     echo -e "$YELLOW --------------------------------------------------------------- $ENDCOLOR"
+    sleep 1
+    echo -e "$RED-----------------------------------------------------------------------$ENDCOLOR"
+    echo -e "$YELLOW"In the name of humanity, you must stand with Gaza. Israel is committing genocide in Gaza, 
+            targeting children, women, and the elderly in the name of the war on Hamas. Israel has committed dozens of atrocities,
+            the worst of which is the Al-Mawasi Hospital massacre in the heart of Gaza. Look at your conscience.$ENDCOLOR"
+    echo -e        
     echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR"
 
 }
