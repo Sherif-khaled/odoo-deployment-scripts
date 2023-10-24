@@ -211,7 +211,7 @@ function check_ram() {
   MEM=$((MEM / 1000))
 
   # Check if the available memory is less than 2GB (2048MB)
-  if (( MEM < 1600 )); then
+  if (( MEM < 1700 )); then
     # Print an error message if the memory is insufficient
     echo -e "$RED [ X ]$BLUE Insufficient RAM: Your server needs at least 2GB of memory."
     exit 1  # Exit the script with an error code
