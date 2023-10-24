@@ -36,13 +36,13 @@ RED='\033[00;31m'
 GREEN='\033[00;32m'
 YELLOW='\033[00;33m'
 BLUE='\033[00;34m'
+LBLUE='\033[01;34m'
 LGREEN='\033[01;32m'
 LYELLOW='\033[01;33m'
 BLUE='\033[01;34m'
 LPURPLE='\033[01;35m'
 LCYAN='\033[01;36m'
-LBRIGHTGREEN=
-LRED='\033[01;31m'
+BOLDRED='\e[1;91m'
 HIGHLIGHT='\033[41m'
 
 #User Varibales
@@ -118,7 +118,7 @@ phase5="以人道之名，你必须支持加沙。以色列正在以哈马斯为
 phase6="בשם האנושות, עליך לעמוד לצידי עזה. ישראל מבצעת רצח עם בעזה, כאשר הילדים, הנשים והקשישים נפגעים בשם המלחמה בחמאס. ישראל ביצעה עשרות אכזבות, הגרועה ביותר מהן היא הטבח בבית החולים אל-מוואסי בלב עזה. הסתכלו על הודעת המזון שבך."
 
 # Simulate typing for phase 1
-echo -e "$LYELLOW"
+echo -e "$YELLOW"
 type_text "$phase1"
 echo -e "\n"
 printf -- '=%.0s' {1..60}
@@ -138,23 +138,26 @@ echo -e "\n"
 printf -- '=%.0s' {1..60}
 echo -e "\n$ENDCOLOR"
 
-# Print three empty lines
-echo -e "\n\n\n"
-
 # Simulate typing for phase 4
+echo -e "$LBLUE"
 type_text "$phase4"
-
-# Print three empty lines
-echo -e "\n\n\n"
+echo -e "\n"
+printf -- '=%.0s' {1..60}
+echo -e "\n$ENDCOLOR"
 
 # Simulate typing for phase 5
+echo -e "$LGREEN"
 type_text "$phase5"
-
-# Print three empty lines
-echo -e "\n\n\n"
+echo -e "\n"
+printf -- '=%.0s' {1..60}
+echo -e "\n$ENDCOLOR"
 
 # Simulate typing for phase 6
+echo -e "$BOLDRED"
 type_text "$phase6"
+echo -e "\n"
+printf -- '=%.0s' {1..60}
+echo -e "\n$ENDCOLOR"
 }
 #######################################
 # Function Name: check_root
