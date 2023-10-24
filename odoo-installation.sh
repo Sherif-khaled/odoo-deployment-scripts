@@ -520,6 +520,7 @@ function configure_ufw() {
 
   echo "y" | sudo ufw enable "$answer"
 }
+
 #######################################
 # Function Name: install_dependencies
 # Description: Install system dependencies required for the Odoo installation.
@@ -583,39 +584,85 @@ function install_dependencies(){
     "python3-tk" "python3-gevent" "postgresql" "postgresql-server-dev-all" "nginx" "certbot" "libssl1.1"
   )
 
-   for (( i = 0; i < ${#dependencies[@]} ; i++ )); do
-     printf "%s\n $YELLOW **** Basic dependencies installing now: ${dependencies[$i]} ***** $ENDCOLOR \n\n"
-
-     # Run each command in array
-     eval "apt-get install ${dependencies[$i]} -y"
-   done
-
    for dependency in "${dependencies[@]}"; do
     echo -e "\n$YELLOW **** Installing dependency: $dependency **** $ENDCOLOR\n"
     apt-get install "$dependency" -y
-  }
+   done
 
   echo -e "\n---- Installing Node.js, NPM, and rtlcss for LTR support ----"
   apt-get install nodejs npm -y
   npm install -g rtlcss
 }
 
+#######################################
+# Function Name: create_user
+# Description: Create system and PostgreSQL users for Odoo.
+# 
+# This function creates a system user for Odoo and a corresponding PostgreSQL user with superuser privileges.
+# 
+# Globals:
+#   ODOO_VERSION (integer) - The Odoo version used to create user-specific names.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Creates a system user for Odoo with sudo privileges.
+#   - Creates a PostgreSQL user with superuser privileges.
+#######################################
+function create_user() {
+  # Create system user for Odoo
+  sudo useradd -m -d "/opt/odoo$ODOO_VERSION" -U -r -s /bin/bash "odoo$ODOO_VERSION"
+  sudo adduser "odoo$ODOO_VERSION" sudo
 
-# Create postgresql user and odoo user
-function create_user(){
-  #create odoo user
-  sudo useradd -m -d /opt/odoo"$ODOO_VERSION" -U -r -s /bin/bash odoo"$ODOO_VERSION"
-  sudo adduser odoo"$ODOO_VERSION" sudo
-  #create postgresql user
-  sudo su - postgres -c "createuser -s odoo$ODOO_VERSION"
+  # Create PostgreSQL user with superuser privileges
+  sudo su - postgres -c "createuser -s 'odoo$ODOO_VERSION'"
 }
-function install_wkhtmltopdf(){
+
+#######################################
+# Function Name: install_wkhtmltopdf
+# Description: Install wkhtmltopdf for Odoo.
+# 
+# This function downloads the wkhtmltopdf package from a specific release and installs it.
+# 
+# Globals:
+#   None
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Downloads and installs wkhtmltopdf.
+#######################################
+function install_wkhtmltopdf() {
+  # Download wkhtmltopdf package
   wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
+
+  # Install wkhtmltopdf
   sudo apt install ./wkhtmltox_0.12.5-1.bionic_amd64.deb -y
 }
-function installing_odoo(){
+
+#######################################
+# Function Name: installing_odoo
+# Description: Install and configure Odoo with virtual environment.
+# 
+# This function installs Odoo, sets up a Python virtual environment for it, and installs necessary Python packages.
+# 
+# Globals:
+#   ODOO_VERSION (integer) - The Odoo version.
+#   ENABLE_ENTERPRISE (boolean) - Indicates whether to enable Odoo Enterprise edition.
+#   ENTERPRISE_REPO_USERNAME (string) - Username for the Odoo Enterprise repository.
+#   ENTERPRISE_REPO_PASSWPRD (string) - Password for the Odoo Enterprise repository.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Installs and configures Odoo with a virtual environment and necessary Python packages.
+#######################################
+function installing_odoo() {
   su -c "git clone https://www.github.com/odoo/odoo --depth 1 --branch $ODOO_VERSION.0 /opt/odoo$ODOO_VERSION/odoo"
-  su -c "python3 -m venv odoo-venv" #Create a new Python virtual environment for Odoo:
+  su -c "python3 -m venv odoo-venv" # Create a new Python virtual environment for Odoo
   su -c "cd /opt/odoo$ODOO_VERSION" odoo"$ODOO_VERSION"
   su -c "source odoo-venv/bin/activate" odoo"$ODOO_VERSION"
   su -c "pip3 install wheel" odoo"$ODOO_VERSION"
@@ -631,20 +678,71 @@ function installing_odoo(){
   su -c "deactivate"
   su -c "mkdir /opt/odoo$ODOO_VERSION/custom-addons"
 }
-function configure_odoo(){
+
+#######################################
+# Function Name: configure_odoo
+# Description: Configure and start the Odoo service.
+# 
+# This function configures the Odoo service, including creating configuration files and systemd service files, enabling and starting the service, and setting up logs.
+# 
+# Globals:
+#   ODOO_VERSION (integer) - The Odoo version.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Configures and starts the Odoo service.
+#######################################
+function configure_odoo() {
   create_odoo_file
   create_service_file
   configure_logs
   sudo systemctl daemon-reload
-  sudo systemctl enable --now odoo"$ODOO_VERSION"
-  service odoo"$ODOO_VERSION" start
+  sudo systemctl enable --now "odoo$ODOO_VERSION"
+  service "odoo$ODOO_VERSION" start
 }
-# create Logs Directory
-function configure_logs(){
-  mkdir /var/log/odoo"$ODOO_VERSION"
+
+#######################################
+# Function Name: configure_logs
+# Description: Configure log directory for Odoo.
+# 
+# This function creates a directory for Odoo logs and sets the appropriate ownership.
+# 
+# Globals:
+#   ODOO_VERSION (integer) - The Odoo version.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Creates a log directory for Odoo and sets its ownership.
+#######################################
+function configure_logs() {
+  mkdir -p /var/log/odoo"$ODOO_VERSION"
   chown odoo"$ODOO_VERSION":odoo"$ODOO_VERSION" /var/log/odoo"$ODOO_VERSION"
 }
-function create_odoo_file(){
+
+#######################################
+# Function Name: create_odoo_file
+# Description: Create Odoo configuration file.
+# 
+# This function generates an Odoo configuration file based on various settings, including enabling Odoo Enterprise, cloud deployment, and dynamic paths.
+# 
+# Globals:
+#   ODOO_VERSION (integer) - The Odoo version.
+#   ENABLE_ENTERPRISE (boolean) - Indicates whether to enable Odoo Enterprise edition.
+#   HASHED_PASSWORD (string) - A hashed password for database operations.
+#   is_cloud (boolean) - Indicates whether it's a cloud deployment.
+#   SYS_PORT (integer) - The port number for XML-RPC communication.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Creates an Odoo configuration file with dynamic settings.
+#######################################
+function create_odoo_file() {
   if [ "$ENABLE_ENTERPRISE" = true ]; then
     addons_path="/opt/odoo$ODOO_VERSION/odoo/addons,/opt/odoo$ODOO_VERSION/enterprise,/opt/odoo$ODOO_VERSION/custom-addons"
   else
@@ -656,10 +754,10 @@ function create_odoo_file(){
   else
     proxy_value="False"
   fi
-  
-  cat > /etc/odoo"$ODOO_VERSION".conf << HERE
+
+  # Use a heredoc to create the Odoo configuration file
+  cat << EOF > /etc/odoo"$ODOO_VERSION".conf
 [options]
-; This is the password that allows database operations:
 admin_passwd = $HASHED_PASSWORD
 db_host = False
 db_port = False
@@ -669,10 +767,26 @@ proxy_mode = $proxy_value
 xmlrpc_port = $SYS_PORT
 addons_path = $addons_path
 logfile = /var/log/odoo$ODOO_VERSION/odoo$ODOO_VERSION.log
-HERE
+EOF
 }
-function create_service_file(){
-cat > /etc/systemd/system/odoo"$ODOO_VERSION".service << HERE
+
+#######################################
+# Function Name: create_service_file
+# Description: Create a systemd service file for Odoo.
+# 
+# This function generates a systemd service file for Odoo, specifying its unit, dependencies, and execution details.
+# 
+# Globals:
+#   ODOO_VERSION (integer) - The Odoo version.
+# 
+# Arguments:
+#   None
+# 
+# Outputs:
+#   - Creates a systemd service file for Odoo.
+#######################################
+function create_service_file() {
+  cat > /etc/systemd/system/odoo"$ODOO_VERSION".service << HERE
 [Unit]
 Description=Odoo$ODOO_VERSION
 Requires=postgresql.service
@@ -691,6 +805,7 @@ StandardOutput=journal+console
 WantedBy=multi-user.target
 HERE
 }
+
 function create_domain_file(){
 local DOMAIN_NAME="$1"
 cat > "/etc/nginx/sites-available/$DOMAIN_NAME" << HERE
