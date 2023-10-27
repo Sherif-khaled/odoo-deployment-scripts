@@ -683,7 +683,7 @@ function configure_ufw() {
 #   - libharfbuzz-dev
 #   - libfribidi-dev
 #   - libxcb1-dev
-#   - python3-dev
+#   - python36-dev
 #   - python3-venv
 #   - python3-wheel
 #   - python3-setuptools
