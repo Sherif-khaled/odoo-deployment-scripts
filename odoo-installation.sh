@@ -311,7 +311,7 @@ err(){
 function get_odoo_version() {
   re='^[0-9]+$'
   while [[ -z "$ODOO_VERSION" ]]; do
-    read -r -p "Choose the Odoo version between [15 - 16]: " ODOO_VERSION
+    read -r "Choose the Odoo version between [15 - 16]: " ODOO_VERSION
     if ! [[ $ODOO_VERSION =~ $re ]] || ((ODOO_VERSION < 15)) || ((ODOO_VERSION > 16)); then
       echo "Enter a valid number between 15 and 16"
       ODOO_VERSION=""
