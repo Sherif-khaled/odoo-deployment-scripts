@@ -34,3 +34,6 @@ This interactive Bash script guides the user through the installation of Odoo, s
 <pre>
   <code>wget -qO- https://raw.githubusercontent.com/Sherif-khaled/odoo-deployment-scripts/master/odoo-installation.sh | bash</code>
 </pre>
+
+## Attention
+# This Script 
