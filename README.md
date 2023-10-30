@@ -31,6 +31,6 @@ This interactive Bash script guides the user through the installation of Odoo, s
 - EMail address for SSL installation [Cloud Only].
 - Github username and password or token access key for odoo enterprise repository.
 ## Usage
-wget -qO- https://raw.githubusercontent.com/Sherif-khaled/odoo-deployment-scripts/master/odoo-installation.sh | bash
-
-```
+<pre>
+  <code>wget -qO- https://raw.githubusercontent.com/Sherif-khaled/odoo-deployment-scripts/master/odoo-installation.sh | bash</code>
+</pre>
