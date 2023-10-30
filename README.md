@@ -36,4 +36,11 @@ This interactive Bash script guides the user through the installation of Odoo, s
 </pre>
 
 ## Attention
-# This Script 
+> [!Attention] 
+> This script supports the people of Gaza, and we invite all of you to stand with Gaza against the crimes being committed 
+> against humanity and to stop the massacres occurring against children and civilians. At the moment of launching this script,
+> more than 80,500 civilians, half of them children and infants, have been killed.
+
+
+
+
