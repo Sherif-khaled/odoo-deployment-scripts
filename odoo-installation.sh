@@ -90,7 +90,7 @@ function banner(){
     echo -e "$RED-----------------------------------------------------------------------$ENDCOLOR"
 
     echo -e "${HIGHLIGHT}${LYELLOW}<<<Stand with Gaza, it is under attack for the purpose of genocide>>>$ENDCOLOR\n"
-    gaza_support
+    
 
 
 }
@@ -1091,6 +1091,8 @@ function final_result() {
 # Main function: Orchestrates the Odoo installation process
 Main(){
     banner
+    gaza_support
+    
     check_root
     check_ram
     check_x64
