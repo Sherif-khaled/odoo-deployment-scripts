@@ -391,10 +391,10 @@ function get_enterprise_username() {
 #######################################
 function get_enterprise_password() {
   while true; do
-    read -r -s -p "Enter the Odoo enterprise repository password: " ENTERPRISE_REPO_PASSWORD
+    read -r -s -p "Enter the Odoo enterprise repository password: \n" ENTERPRISE_REPO_PASSWORD
 
     if [[ -z "$ENTERPRISE_REPO_PASSWORD" ]]; then
-      echo "Password cannot be empty. Please try again."
+      echo -e "Password cannot be empty. Please try again.\n"
     else
       break
     fi
