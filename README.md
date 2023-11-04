@@ -1,7 +1,7 @@
 ## [Odoo](https://www.odoo.com "Odoo's Homepage") Deployment
 This interactive Bash script guides the user through the installation of Odoo, supporting both Community and Enterprise editions for versions 15 and 16. It also installs additional required packages, sets up the Nginx web server, and configures Odoo for production use.
 
-
+<img src="odoo-deployment.gif"/>
 
 ## Features
 
