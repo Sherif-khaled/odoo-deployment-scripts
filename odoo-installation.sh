@@ -638,8 +638,7 @@ function configure_ufw() {
   sudo ufw allow 8072/tcp          # Allow long polling port
   sudo ufw allow 80/tcp            # Allow HTTP port
   sudo ufw allow 443/tcp           # Allow HTTPS port
-
-  echo "y" | sudo ufw enable "$answer"
+  echo "y" | sudo ufw enable $answer
 }
 
 #######################################
