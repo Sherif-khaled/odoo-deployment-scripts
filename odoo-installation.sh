@@ -787,8 +787,8 @@ function installing_odoo() {
   su -c "source odoo-venv/bin/activate" odoo$ODOO_VERSION
   su -c "pip3 install wheel" odoo$ODOO_VERSION
   su -c "pip3 install paramiko" odoo$ODOO_VERSION
-  su -c "pip3 install asn1crypto" odoo$ODOO_VERSION
   su -c "pip3 install pandas" odoo$ODOO_VERSION
+  
   su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo$ODOO_VERSION
 
   if [ "$ENABLE_ENTERPRISE" = true ]; then
@@ -921,7 +921,7 @@ SyslogIdentifier=odoo$ODOO_VERSION
 PermissionsStartOnly=true
 User=odoo$ODOO_VERSION
 Group=odoo$ODOO_VERSION
-ExecStart=/opt/odoo$ODOO_VERSION/odoo/odoo-bin -c /etc/odoo$ODOO_VERSION.conf
+ExecStart=/opt/$ODOO_VERSION/odoo-venv/bin/python3 /opt/odoo$ODOO_VERSION/odoo/odoo-bin -c /etc/odoo$ODOO_VERSION.conf
 StandardOutput=journal+console
 
 [Install]
