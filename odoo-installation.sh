@@ -533,7 +533,6 @@ function get_ssl_email() {
 # 
 # Globals:
 #   MASTER_PASSWORD (string) - Stores the generated master password.
-#   HASHED_PASSWORD (string) - Stores the hashed master password.
 # 
 # Arguments:
 #   None
@@ -544,14 +543,6 @@ function get_ssl_email() {
 function generate_master_password() {
   characters='A-Za-z0-9!@#$%^&*()_+'
   MASTER_PASSWORD=$(tr -dc "$characters" < /dev/urandom | head -c 15)
-
-  # Check if passlib is installed
-  if ! pip3 show passlib &> /dev/null; then
-    echo "passlib is not installed. Installing passlib..."
-    pip3 install passlib
-  fi
-
-  HASHED_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$MASTER_PASSWORD}'))")
 }
 
 #######################################
@@ -884,7 +875,10 @@ function create_odoo_file() {
   else
     proxy_value="False"
   fi
+  
 
+  HASHED_PASSWORD=$(python3 -c "from passlib.context import CryptContext; print(CryptContext(schemes=['pbkdf2_sha512']).hash('{$MASTER_PASSWORD}'))")
+  
   # Use a heredoc to create the Odoo configuration file
   cat << EOF > /etc/odoo"$ODOO_VERSION".conf
 [options]
@@ -1091,7 +1085,7 @@ function final_result() {
 # Main function: Orchestrates the Odoo installation process
 Main(){
     banner
-    gaza_support
+    #gaza_support
     
     check_root
     check_ram
