@@ -52,7 +52,7 @@ DOMAIN_NAME=''
 SSL_EMAIL=''
 MASTER_PASSWORD=
 HASHED_PASSWORD=
-ENABLE_ENTERPRISE=false
+IS_ENTERPRISE=false
 ENTERPRISE_REPO_USERNAME=
 ENTERPRISE_REPO_PASSWPRD=
 is_cloud=true
@@ -249,22 +249,23 @@ function get_odoo_version() {
 # The user can choose 'y' for yes or 'n' for no.
 # 
 # Globals:
-#   ENABLE_ENTERPRISE (boolean) - Stores the user's choice (true for 'y' or false for 'n').
+#   IS_ENTERPRISE (boolean) - Stores the user's choice (true for 'y' or false for 'n').
 # 
 # Arguments:
 #   None
 # 
 # Outputs:
-#   - Prompts the user for input and stores their choice in ENABLE_ENTERPRISE.
+#   - Prompts the user for input and stores their choice in IS_ENTERPRISE.
 #######################################
 function get_edition_name() {
   echo -e "$LGREEN Do you want to install the enterprise edition? (y)es, (n)o :"
   read -r -p ' ' INPUT
   case $INPUT in
-    [Yy]* ) ENABLE_ENTERPRISE=true;;
-    [Nn]* ) ENABLE_ENTERPRISE=false;;
+    [Yy]* ) IS_ENTERPRISE=true;;
+    [Nn]* ) IS_ENTERPRISE=false;;
   esac
 }
+
 
 #######################################
 # Function Name: get_enterprise_username
@@ -378,6 +379,7 @@ function is_cloud() {
     [Yy]* ) is_cloud=true;;
     [Nn]* ) is_cloud=false;;
   esac
+  echo $is_cloud
 }
 
 #######################################
@@ -480,7 +482,7 @@ function generate_master_password() {
 #   SYS_PORT (integer) - User's chosen port number.
 #   DOMAIN_NAME (string) - User's entered domain name, if not cloud then will assign http://localhost.
 #   SSL_EMAIL (string) - User's entered email address.
-#   ENABLE_ENTERPRISE (boolean) - User's choice of enterprise edition.
+#   IS_ENTERPRISE (boolean) - User's choice of enterprise edition.
 #   MASTER_PASSWORD (string) - Generated master password.
 # 
 # Arguments:
@@ -494,7 +496,7 @@ function print_user_input() {
         * Port Number Is: $SYS_PORT                         
         * Domain Name Is: $DOMAIN_NAME                      
         * SSL E-Mail Is:  $SSL_EMAIL
-        * Enterprise Edition: $ENABLE_ENTERPRIPRISE
+        * Enterprise Edition: $IS_ENTERPRISE
         * Master Password: $MASTER_PASSWORD                                                                        
         *******************************************************
         "
@@ -693,7 +695,7 @@ function install_wkhtmltopdf() {
 # 
 # Globals:
 #   ODOO_VERSION (integer) - The Odoo version.
-#   ENABLE_ENTERPRISE (boolean) - Indicates whether to enable Odoo Enterprise edition.
+#   IS_ENTERPRISE (boolean) - Indicates whether to enable Odoo Enterprise edition.
 #   ENTERPRISE_REPO_USERNAME (string) - Username for the Odoo Enterprise repository.
 #   ENTERPRISE_REPO_PASSWPRD (string) - Password for the Odoo Enterprise repository.
 # 
@@ -711,7 +713,7 @@ function installing_odoo() {
 
   su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo$ODOO_VERSION
 
-  if [ "$ENABLE_ENTERPRISE" = true ]; then
+  if [ "$IS_ENTERPRISE" = "true" ]; then
     su -c "git clone -b $ODOO_VERSION.0 https://${ENTERPRISE_REPO_USERNAME}:${ENTERPRISE_REPO_PASSWPRD}@github.com/odoo/enterprise.git /opt/odoo$ODOO_VERSION/enterprise"
   fi
 
@@ -771,7 +773,7 @@ function configure_logs() {
 # 
 # Globals:
 #   ODOO_VERSION (integer) - The Odoo version.
-#   ENABLE_ENTERPRISE (boolean) - Indicates whether to enable Odoo Enterprise edition.
+#   IS_ENTERPRISE (boolean) - Indicates whether to enable Odoo Enterprise edition.
 #   HASHED_PASSWORD (string) - A hashed password for database operations.
 #   is_cloud (boolean) - Indicates whether it's a cloud deployment.
 #   SYS_PORT (integer) - The port number for XML-RPC communication.
@@ -783,7 +785,7 @@ function configure_logs() {
 #   - Creates an Odoo configuration file with dynamic settings.
 #######################################
 function create_odoo_file() {
-  if [ "$ENABLE_ENTERPRISE" = true ]; then
+  if [ "$IS_ENTERPRISE" = true ]; then
     addons_path="/opt/odoo$ODOO_VERSION/odoo/addons,/opt/odoo$ODOO_VERSION/enterprise,/opt/odoo$ODOO_VERSION/custom-addons"
   else
     addons_path="/opt/odoo$ODOO_VERSION/odoo/addons,/opt/odoo$ODOO_VERSION/custom-addons"
@@ -1013,7 +1015,7 @@ Main(){
     get_odoo_version
     get_edition_name
 
-    if [ "$ENABLE_ENTERPRISE" = true ]; then
+    if [ "$IS_ENTERPRISE" = true ]; then
     get_enterprise_username
     get_enterprise_password
     fi
