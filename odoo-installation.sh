@@ -1045,8 +1045,7 @@ Main(){
     DOMAIN_NAME="http://localhost:$SYS_PORT"
     fi
 
-    final_resualt
-
+    final_result
 
 }
 Main
