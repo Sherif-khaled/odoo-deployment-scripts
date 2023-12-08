@@ -46,7 +46,7 @@ BOLDRED='\e[1;91m'
 HIGHLIGHT='\033[41m'
 
 #User Varibales
-ODOO_VERSION=15
+ODOO_VERSION=
 SYS_PORT=
 DOMAIN_NAME=''
 SSL_EMAIL=''
@@ -95,84 +95,6 @@ function banner(){
 
 }
 
-function gaza_support(){
-    # Function to simulate typing
-type_text() {
-    text="$1"
-    for ((i = 0; i < ${#text}; i++)); do
-        echo -n "${text:$i:1}"
-        sleep 0.03 # Adjust the sleep duration for typing speed
-    done
-}
-
-phase1="In the name of humanity, you must stand with Gaza. Israel is committing genocide in Gaza, targeting children, women, and the elderly in the name of the war on Hamas. Israel has committed dozens of atrocities, the worst of which is the Gaza hospital blast massacre in the heart of Gaza. Look at your conscience."
-
-phase2="Au nom de l'humanité, vous devez soutenir Gaza. Israël commet un génocide à Gaza, ciblant les enfants, les femmes et les personnes âgées au nom de la guerre contre le Hamas. Israël a commis des dizaines d'atrocités, la pire étant le massacre de l'hôpital Gaza au cœur de Gaza. Regardez votre conscience."
-
-phase3="Im Namen der Menschlichkeit müssen Sie sich auf die Seite von Gaza stellen. Israel begeht in Gaza Völkermord, indem es Kinder, Frauen und alte Menschen im Namen des Krieges gegen die Hamas ins Visier nimmt. Israel hat Dutzende von Gräueltaten begangen, von denen die schlimmste das Massaker im Gaza-Krankenhaus im Herzen von Gaza ist. Schauen Sie auf Ihr Gewissen."
-
-phase4="Во имя человечества вы должны поддержать Газу. Израиль совершает геноцид в Газе, нацеливаясь на детей, женщин и пожилых людей во имя войны против ХАМАС. Израиль совершил десятки злодеяний, худшим из которых была резня в баптистской больнице в центре Газы. Посмотрите на свою совесть."
-
-phase5="以人类的名义，你们必须支持加沙。 以色列以哈马斯的名义在加沙实施种族灭绝，目标是儿童、妇女和老人。 以色列犯下了数十起暴行，其中最严重的是加沙地带中部浸信会医院大屠杀。 看看你的良心"
-
-phase6="בשם האנושות אתה חייב לעמוד עם עזה. ישראל מבצעת רצח עם בעזה, ומכוונת לילדים, נשים וקשישים בשם המלחמה בחמאס. ישראל ביצעה עשרות מעשי זוועה, שהגרוע שבהם הוא הטבח בפיצוץ בית החולים בעזה בלב עזה. תסתכל על המצפון שלך."
-
-# Simulate typing for phase 1
-echo -e "$YELLOW"
-type_text "$phase1"
-echo -e "\n"
-printf -- '=%.0s' {1..60}
-echo -e "\n$ENDCOLOR"
-
-# Simulate typing for phase 2
-echo -e "$LPURPLE"
-type_text "$phase2"
-echo -e "\n"
-printf -- '=%.0s' {1..60}
-echo -e "\n$ENDCOLOR"
-
-# Simulate typing for phase 3
-echo -e "$LCYAN"
-type_text "$phase3"
-echo -e "\n"
-printf -- '=%.0s' {1..60}
-echo -e "\n$ENDCOLOR"
-
-# Simulate typing for phase 4
-echo -e "$LBLUE"
-type_text "$phase4"
-echo -e "\n"
-printf -- '=%.0s' {1..60}
-echo -e "\n$ENDCOLOR"
-
-# Simulate typing for phase 5
-echo -e "$LGREEN"
-type_text "$phase5"
-echo -e "\n"
-printf -- '=%.0s' {1..60}
-echo -e "\n$ENDCOLOR"
-
-# Simulate typing for phase 6
-echo -e "$BOLDRED"
-type_text "$phase6"
-echo -e "\n"
-printf -- '=%.0s' {1..60}
-echo -e "\n$ENDCOLOR"
-}
-#######################################
-# Function Name: check_root
-# Description: Check if the script is running with root privileges.
-# 
-# This function checks if the script is being run with root privileges (UID 0). If the user is not root, it displays an error message
-# and exits the script. If the user is root, it displays a success message.
-# 
-# Globals:
-#   None
-# 
-# Outputs:
-#   - Displays messages indicating the result of the root privilege check.
-#   - Exits the script with an error code if the user is not root.
-#######################################
 function check_root() {
     # Print a message to indicate that root privilege is being checked
     echo -e "$BLUE [ * ] Check root privilege"
@@ -1081,7 +1003,6 @@ function final_result() {
 # Main function: Orchestrates the Odoo installation process
 Main(){
     banner
-    #gaza_support
     
     check_root
     check_ram
