@@ -784,11 +784,8 @@ function installing_odoo() {
   su -c "git clone https://www.github.com/odoo/odoo --depth 1 --branch $ODOO_VERSION.0 /opt/odoo$ODOO_VERSION/odoo"
   su -c "python3 -m venv odoo-venv" # Create a new Python virtual environment for Odoo
   su -c "cd /opt/odoo$ODOO_VERSION" odoo$ODOO_VERSION
-  su -c "source odoo-venv/bin/activate" odoo$ODOO_VERSION
-  su -c "pip3 install wheel" odoo$ODOO_VERSION
-  su -c "pip3 install paramiko" odoo$ODOO_VERSION
-  su -c "pip3 install pandas" odoo$ODOO_VERSION
-  
+  su -c "source odoo-venv/bin/activate && pip3 install wheel paramiko pandas" odoo$ODOO_VERSION
+
   su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo$ODOO_VERSION
 
   if [ "$ENABLE_ENTERPRISE" = true ]; then
