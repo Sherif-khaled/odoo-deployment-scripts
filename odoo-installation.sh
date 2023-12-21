@@ -706,9 +706,9 @@ function install_wkhtmltopdf() {
 #   - Installs and configures Odoo with a virtual environment and necessary Python packages.
 #######################################
 function installing_odoo() {
+  su -c "cd /opt/odoo$ODOO_VERSION" odoo$ODOO_VERSION
   su -c "git clone https://www.github.com/odoo/odoo --depth 1 --branch $ODOO_VERSION.0 /opt/odoo$ODOO_VERSION/odoo"
   su -c "python3 -m venv odoo-venv" # Create a new Python virtual environment for Odoo
-  su -c "cd /opt/odoo$ODOO_VERSION" odoo$ODOO_VERSION
   su -c "source odoo-venv/bin/activate && pip3 install wheel paramiko pandas" odoo$ODOO_VERSION
 
   su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo$ODOO_VERSION
