@@ -840,7 +840,7 @@ SyslogIdentifier=odoo$ODOO_VERSION
 PermissionsStartOnly=true
 User=odoo$ODOO_VERSION
 Group=odoo$ODOO_VERSION
-ExecStart=/opt/$ODOO_VERSION/odoo-venv/bin/python3 /opt/odoo$ODOO_VERSION/odoo/odoo-bin -c /etc/odoo$ODOO_VERSION.conf
+ExecStart=/opt/odoo$ODOO_VERSION/odoo-venv/bin/python3 /opt/odoo$ODOO_VERSION/odoo/odoo-bin -c /etc/odoo$ODOO_VERSION.conf
 StandardOutput=journal+console
 
 [Install]
