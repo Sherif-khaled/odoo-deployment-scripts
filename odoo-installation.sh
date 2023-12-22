@@ -493,7 +493,7 @@ function generate_master_password() {
 #######################################
 function print_user_input() {
   echo -e "$YELLOW ********************************************
-        * Odoo Version: 
+        * Odoo Version: $ODOO_VERSION
         * Port Number Is: $SYS_PORT                         
         * Domain Name Is: $DOMAIN_NAME                      
         * SSL E-Mail Is:  $SSL_EMAIL
