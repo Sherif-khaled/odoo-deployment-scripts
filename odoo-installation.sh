@@ -708,10 +708,8 @@ function install_wkhtmltopdf() {
 function installing_odoo() {
   su -c "cd /opt/odoo$ODOO_VERSION" odoo$ODOO_VERSION
   su -c "git clone https://www.github.com/odoo/odoo --depth 1 --branch $ODOO_VERSION.0 /opt/odoo$ODOO_VERSION/odoo"
-  su -c "python3 -m venv odoo-venv" # Create a new Python virtual environment for Odoo
-  su -c "source odoo-venv/bin/activate && pip3 install wheel paramiko pandas passlib" odoo$ODOO_VERSION
-
-  su -c "pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo$ODOO_VERSION
+  su -c "python3 -m venv /opt/odoo$ODOO_VERSION/odoo-venv" # Create a new Python virtual environment for Odoo
+  su -c "source /opt/odoo$ODOO_VERSION/odoo-venv/bin/activate && pip3 install wheel paramiko pandas passlib && pip3 install -r /opt/odoo$ODOO_VERSION/odoo/requirements.txt" odoo$ODOO_VERSION
 
   if [ "$IS_ENTERPRISE" = "true" ]; then
     su -c "git clone -b $ODOO_VERSION.0 https://${ENTERPRISE_REPO_USERNAME}:${ENTERPRISE_REPO_PASSWPRD}@github.com/odoo/enterprise.git /opt/odoo$ODOO_VERSION/enterprise"
